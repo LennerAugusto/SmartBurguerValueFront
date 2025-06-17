@@ -1,0 +1,35 @@
+﻿:root {
+    --orange: #FF6B1E;
+    --orange-light: #FDCEA1;
+    --orange-subtle: #FFEEE0;
+    --orange-background: #F9F4EF;
+    --black: #333333;
+    --white: #FFFFFF;
+    --yellow: #FFD901;
+    --grey-30: #858585;
+    --grey-20: #B6B6B6;
+    --grey-10: #DEDEDE;
+
+}
+
+.bg-orange {
+    background-color: var(--orange);
+}
+.bg-orange-light {
+    background-color: var(--orange-light);
+}
+.bg-orange-subtle {
+    background-color: var(--orange-subtle);
+}
+.bg-orange-background {
+    background-color: var(--orange-background);
+}
+.text-black{
+    color:var(--black);
+}
+.text-white {
+    color: var(--white);
+}
+.text-yellow {
+    color: var(--yellow);
+}

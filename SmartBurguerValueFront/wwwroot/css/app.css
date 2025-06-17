@@ -16,10 +16,12 @@ a, .btn-link {
     border-color: #1861ac;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus, .btn:active:focus, .btn-link, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
-
+.nav-link:focus{
+    background-color: var(--orange-light);
+}
 .content {
     padding-top: 1.1rem;
 }
@@ -111,4 +113,19 @@ code {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
+}
+.bg-nav-bmpi {
+    background-color: #FDFDFD;
+}
+
+.item-customize:hover, .item-customize:focus{
+    background-color: var(--orange-subtle) !important;
+    color: var(--orange) !important;
+    border-radius: 12px !important;
+}
+.border-custom:hover, border-custom:focus {
+    border-left: 2px solid var(--orange);
+}
+.item-customize {
+    color: var(--grey-30) !important;
 }

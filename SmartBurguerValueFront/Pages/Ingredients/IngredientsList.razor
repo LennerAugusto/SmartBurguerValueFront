@@ -1,0 +1,70 @@
+﻿@page "/ingredientes"
+@using Radzen
+@using Radzen.Blazor
+
+@inject DialogService DialogService
+
+<h3>Ingredientes</h3>
+
+<div style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+    <RadzenIcon Icon="search" Style="color: gray;" />
+    <input type="text" placeholder="Filtrar por nome..." @bind="filtroNome" @bind:event="oninput"
+           style="padding: 6px 8px; border-radius: 6px; border: 1px solid #ccc; width: 250px;" />
+</div>
+
+<RadzenDataGrid TItem="Produto" Data="@produtosFiltrados" ColumnWidth="200px"
+                AllowPaging="true" PageSize="10" AllowSorting="true"
+                RowSelect="@OnRowSelect"
+                ShowPagingSummary="true"
+                Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
+    <Columns>
+        <RadzenDataGridColumn TItem="Produto" Property="Nome" Title="Nome" />
+        <RadzenDataGridColumn TItem="Produto" Property="Categoria" Title="Categoria" />
+        <RadzenDataGridColumn TItem="Produto" Property="Preco" Title="Preço"
+                              TextAlign="TextAlign.Right"
+                              FormatString="R$ {0:F2}" />
+        <RadzenDataGridColumn TItem="Produto" Title="Ações">
+            <Template Context="produto">
+                <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditarProduto(produto)" />
+                <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoverProduto(produto)" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    private string filtroNome = "";
+
+    private List<Produto> produtos = new()
+    {
+        new Produto { Nome = "X-Burger", Categoria = "Lanche", Preco = 15.90M },
+        new Produto { Nome = "Refrigerante", Categoria = "Bebida", Preco = 6.00M },
+        new Produto { Nome = "Batata Frita", Categoria = "Acompanhamento", Preco = 8.50M },
+        new Produto { Nome = "Suco Natural", Categoria = "Bebida", Preco = 7.20M },
+    };
+
+    private IEnumerable<Produto> produtosFiltrados => produtos
+        .Where(p => string.IsNullOrWhiteSpace(filtroNome) || p.Nome.Contains(filtroNome, StringComparison.OrdinalIgnoreCase));
+
+    void OnRowSelect(Produto produto)
+    {
+        Console.WriteLine($"Selecionado: {produto.Nome}");
+    }
+
+    void EditarProduto(Produto produto)
+    {
+        //DialogService.Open<EditProdutoDialog>("Editar Produto", new Dictionary<string, object>() { { "Produto", produto } });
+    }
+
+    void RemoverProduto(Produto produto)
+    {
+        produtos.Remove(produto);
+    }
+
+    public class Produto
+    {
+        public string Nome { get; set; }
+        public string Categoria { get; set; }
+        public decimal Preco { get; set; }
+    }
+}

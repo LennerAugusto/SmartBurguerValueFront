@@ -40,16 +40,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aGVudGljYXRpb24ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Weather.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2VhdGhlci5yYXpvcg==
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Ingredients/IngredientsEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5ncmVkaWVudHNcSW5ncmVkaWVudHNFZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Ingredients/IngredientsList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5ncmVkaWVudHNcSW5ncmVkaWVudHNMaXN0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/_Imports.razor]

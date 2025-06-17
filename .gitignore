@@ -1,0 +1,82 @@
+## Build results
+bin/
+obj/
+out/
+wwwroot/dist/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## ASP.NET Core files
+appsettings.*.json
+
+## Visual Studio
+.vscode/
+.vs/
+*.dbmdl
+*.bak
+*.backup
+*.log
+*.orig
+
+## Rider
+.idea/
+*.sln.iml
+
+## .NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+*.nuspec
+*.psmdcp
+*.scc
+
+# Auto-generated files
+Generated/
+Generated_Code/
+
+# Logs
+*.log
+
+## Environment
+.env
+*.env
+
+## Blazor specific
+wwwroot/css/app.css
+wwwroot/js/app.js
+wwwroot/_framework/
+wwwroot/_content/
+
+# Publish folder (if present)
+publish/
+
+# Node (if using npm/yarn for front-end tooling)
+node_modules/
+*.tgz
+package-lock.json
+yarn.lock
+
+# Mac/Linux
+.DS_Store
+*.swp
+*.swo
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Optional
+*.tmp
+*.temp
+*.cache
