@@ -1,3 +1,18 @@
+//{
+//  "$schema": "https://json.schemastore.org/launchsettings.json",
+//  "profiles": {
+//    "https": {
+//      "commandName": "Project",
+//      "dotnetRunMessages": true,
+//      "launchBrowser": true,
+//      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+//      "applicationUrl": "https://localhost:7056;http://localhost:5031",
+//      "environmentVariables": {
+//        "ASPNETCORE_ENVIRONMENT": "Development"
+//      }
+//    }
+//  }
+//}
 {
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
@@ -6,7 +21,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://localhost:7056;http://localhost:5031",
+      "applicationUrl": "https://localhost:7056",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

@@ -129,3 +129,63 @@ code {
 .item-customize {
     color: var(--grey-30) !important;
 }
+
+/*TABELA PRINCIPAL*/
+table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-family: Arial, sans-serif !important;
+    background-color: var(--white) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Cabeçalho */
+/* Cabeçalho */
+th {
+    background-color: var(--orange-light) !important;
+    color: var(--white) !important;
+    font-weight: bold !important;
+    font-size: 1rem !important;
+    letter-spacing: 0.03em !important;
+    text-transform: uppercase !important;
+    padding: 14px 16px !important;
+    text-align: left !important;
+}
+
+/* Células */
+td {
+    padding: 14px 16px !important;
+    text-align: left !important;
+    border-top: 1px solid var(--grey-10) !important;
+    background-color: var(--white) !important;
+    position: relative;
+    transition: box-shadow 0.3s ease-in-out, transform 0.2s ease-in-out;
+    border-radius: 4px;
+}
+
+/* Hover */
+tbody tr:hover td {
+    background-color: var(--orange-background) !important;
+    cursor: pointer !important;
+}
+
+
+/* Arredondamento apenas nas bordas externas da tabela */
+tbody tr:first-child td:first-child {
+    border-top-left-radius: 8px !important;
+}
+
+tbody tr:first-child td:last-child {
+    border-top-right-radius: 8px !important;
+}
+
+tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px !important;
+}
+
+tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px !important;
+}
+

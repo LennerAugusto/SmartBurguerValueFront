@@ -1,0 +1,22 @@
+﻿
+
+<div class="sumary-card-container bg-white p-3 d-flex flex-row align-items-center">
+    <div class="icon-container bg-orange d-flex justify-content-center align-items-center me-3">
+        <img src="@UrlIcon" alt="Ícone" loading="lazy" />
+    </div>
+    <div class="content-container d-flex flex-column justify-content-center">
+        <p class="title-text">@TitleCard</p>
+        <h3 class="number-card">@Number</h3>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string UrlIcon { get; set; }
+
+    [Parameter]
+    public string TitleCard { get; set; }
+
+    [Parameter]
+    public string Number { get; set; }
+}

@@ -9,7 +9,7 @@
     --grey-30: #858585;
     --grey-20: #B6B6B6;
     --grey-10: #DEDEDE;
-
+    --transparent: transparent;
 }
 
 .bg-orange {
@@ -24,6 +24,9 @@
 .bg-orange-background {
     background-color: var(--orange-background);
 }
+.bg-transparent{
+    background-color: var(--transparent);
+}
 .text-black{
     color:var(--black);
 }
@@ -32,4 +35,7 @@
 }
 .text-yellow {
     color: var(--yellow);
+}
+.text-orange{
+    color: var(--orange);
 }

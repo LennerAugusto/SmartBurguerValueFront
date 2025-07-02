@@ -1,11 +1,37 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+@using SmartBurguerValueFront.Components.Cards
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Home</PageTitle>
 
-<h1 class="bg-orange">Hello, world!</h1>
-
-<div class="alert alert-warning" role="alert">
-    Before authentication will function correctly, you must configure your provider details in <code>Program.cs</code>
+<div class="p-4">
+    <h4 class="text-dark">Dashboard</h4>
+    <p style="color:var(--grey-30)">Olá @userName, bem-vindo de volta!</p>
+    <div class="row">
+        <div class="col-12 col-md-3 mb-3">
+            <SumaryCardHome UrlIcon="img/icons/receipt.webp" TitleCard="Total de Pedidos" Number="10" />
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <SumaryCardHome UrlIcon="img/icons/users.webp" TitleCard="Total em Gastos" Number="R$5000" />
+        </div>
+        <div class="col-12 col-md-3 mb-3">
+            <SumaryCardHome UrlIcon="img/icons/dollar.webp" TitleCard="Total em Vendas" Number="R$12.730" />
+        </div>
+    </div>
 </div>
 
-Welcome to your new app.
+@code {
+    private string? userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated == true)
+        {
+            userName = user.Identity.Name;
+        }
+    }
+}

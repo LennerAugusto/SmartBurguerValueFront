@@ -1,0 +1,29 @@
+﻿@using Radzen.Blazor
+
+<div class="input-wrapper w-75">
+    <input class="input-with-icon" type="text" placeholder="Filtrar por nome..."
+           @bind="Filter"
+           @bind:event="oninput" />
+    <i class="fas fa-search icon-inside-input"></i>
+</div>
+
+@code {
+    private string filter;
+
+    [Parameter]
+    public string Filter
+    {
+        get => filter;
+        set
+        {
+            if (filter != value)
+            {
+                filter = value;
+                FilterChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> FilterChanged { get; set; }
+}

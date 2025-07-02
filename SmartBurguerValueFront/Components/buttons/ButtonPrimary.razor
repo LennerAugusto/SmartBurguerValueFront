@@ -1,0 +1,48 @@
+﻿@inject NavigationManager _nav
+
+<div class="button-primary-container d-flex flex-row justify-content-start align-items-center gap-2 cursor-pointer @BackgroundColor"
+     @onclick="HandleClick">
+    @if (Icon != null)
+    {
+        <i class="@TextClass @Icon"></i>
+    }
+    <span class="@TextClass">@Text</span>
+</div>
+
+@code {
+    [Parameter]
+    public string Url { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string BackgroundColor { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; } 
+
+    public string TextClass { get; set; }
+
+    protected override void OnInitialized()
+    {
+        TextClass = BackgroundColor == "bg-orange" ? "text-white" : "text-black";
+        base.OnInitialized();
+    }
+
+    private async Task HandleClick()
+    {
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync();
+        }
+
+        if (!string.IsNullOrWhiteSpace(Url))
+        {
+            _nav.NavigateTo(Url);
+        }
+    }
+}

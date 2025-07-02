@@ -28,6 +28,18 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Component.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Layout/Footer.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEZvb3Rlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Layout/LayoutPublic.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XExheW91dFB1YmxpYy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Layout/LoginDisplay.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XExvZ2luRGlzcGxheS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -52,9 +64,29 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5ncmVkaWVudHNcSW5ncmVkaWVudHNMaXN0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/buttons/ButtonPrimary.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xidXR0b25zXEJ1dHRvblByaW1hcnkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-bserhyidjm
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Cards/SumaryCardHome.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDYXJkc1xTdW1hcnlDYXJkSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-7fwpi3c05f
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Inputs/InputTextFilterTabs.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xJbnB1dHNcSW5wdXRUZXh0RmlsdGVyVGFicy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-fmhza7kbci
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Inputs/SelectPrimary.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xJbnB1dHNcU2VsZWN0UHJpbWFyeS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-f3ncappa0p
 
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Layout/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=

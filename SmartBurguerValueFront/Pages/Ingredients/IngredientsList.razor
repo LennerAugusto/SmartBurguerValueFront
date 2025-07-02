@@ -1,70 +1,118 @@
 ﻿@page "/ingredientes"
+@using Blazored.Toast.Services
+@using DTOs
+@using Microsoft.AspNetCore.Components.Authorization
 @using Radzen
 @using Radzen.Blazor
-
+@using SmartBurguerValueFront.Components.Inputs
+@using SmartBurguerValueFront.Components.buttons
+@inject HttpClient Http
 @inject DialogService DialogService
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+@inject NavigationManager _nav
 
-<h3>Ingredientes</h3>
+<h1>Lista de Ingredientes</h1>
 
-<div style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-    <RadzenIcon Icon="search" Style="color: gray;" />
-    <input type="text" placeholder="Filtrar por nome..." @bind="filtroNome" @bind:event="oninput"
-           style="padding: 6px 8px; border-radius: 6px; border: 1px solid #ccc; width: 250px;" />
+<div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
+    <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
+    <ButtonPrimary BackgroundColor="bg-orange" Text="Novo Ingrediente" Url="/ingredientes/cad" Icon="fas fa-plus icon-inside-input" />
 </div>
 
-<RadzenDataGrid TItem="Produto" Data="@produtosFiltrados" ColumnWidth="200px"
-                AllowPaging="true" PageSize="10" AllowSorting="true"
-                RowSelect="@OnRowSelect"
-                ShowPagingSummary="true"
-                Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
-    <Columns>
-        <RadzenDataGridColumn TItem="Produto" Property="Nome" Title="Nome" />
-        <RadzenDataGridColumn TItem="Produto" Property="Categoria" Title="Categoria" />
-        <RadzenDataGridColumn TItem="Produto" Property="Preco" Title="Preço"
-                              TextAlign="TextAlign.Right"
-                              FormatString="R$ {0:F2}" />
-        <RadzenDataGridColumn TItem="Produto" Title="Ações">
-            <Template Context="produto">
-                <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditarProduto(produto)" />
-                <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoverProduto(produto)" />
-            </Template>
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
+@if (isLoading)
+{
+    <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="background-color: var(--orange)" />
+}
+else if (loadError)
+{
+    <RadzenAlert Severity="AlertSeverity.Error">
+        Erro ao carregar os dados da API.
+    </RadzenAlert>
+}
+else
+{
+    <RadzenDataGrid TItem="IngredientsDTO" Data="@IngredientsFilter" ColumnWidth="200px"
+                    AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
+                    Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
+        <Columns>
+            <RadzenDataGridColumn TItem="IngredientsDTO" Property="Name" Title="Nome" />
+            <RadzenDataGridColumn TItem="IngredientsDTO" Property="UnitOfMeasureName" Title="Formato de Compra" />
+            <RadzenDataGridColumn TItem="IngredientsDTO" Title="Status">
+                <Template Context="ingredient">
+                    @(ingredient.IsActive ? "Ativo" : "Inativo")
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="IngredientsDTO" Title="Ações">
+                <Template Context="ingredient">
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditIngredient(ingredient.Id)" />
+                    <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoveIngredient(ingredient.Id)" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
 
 @code {
-    private string filtroNome = "";
+    private List<IngredientsDTO> Ingredients = new();
+    public Guid? EnterpriseId { get; set; }
+    private string filterName = "";
+    private bool isLoading = true;
+    private bool loadError = false;
 
-    private List<Produto> produtos = new()
+    protected override async Task OnInitializedAsync()
     {
-        new Produto { Nome = "X-Burger", Categoria = "Lanche", Preco = 15.90M },
-        new Produto { Nome = "Refrigerante", Categoria = "Bebida", Preco = 6.00M },
-        new Produto { Nome = "Batata Frita", Categoria = "Acompanhamento", Preco = 8.50M },
-        new Produto { Nome = "Suco Natural", Categoria = "Bebida", Preco = 7.20M },
-    };
+        try
+        {
+            EnterpriseId = await _auth.GetEnterpriseId();
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = $"{baseUrl}ingredient/get-all/by-enterprise-id?enterpriseId={EnterpriseId}";
 
-    private IEnumerable<Produto> produtosFiltrados => produtos
-        .Where(p => string.IsNullOrWhiteSpace(filtroNome) || p.Nome.Contains(filtroNome, StringComparison.OrdinalIgnoreCase));
+            Ingredients = await Http.GetFromJsonAsync<List<IngredientsDTO>>(endpoint) ?? new();
 
-    void OnRowSelect(Produto produto)
-    {
-        Console.WriteLine($"Selecionado: {produto.Nome}");
+            loadError = false;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
+            loadError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
-    void EditarProduto(Produto produto)
+    private IEnumerable<IngredientsDTO> IngredientsFilter =>
+        Ingredients.Where(p => string.IsNullOrWhiteSpace(filterName) || p.Name.Contains(filterName, StringComparison.OrdinalIgnoreCase));
+
+    private void OnFilterChanged(string value) => filterName = value;
+
+    private void OnRowSelect(IngredientsDTO ingredient)
     {
-        //DialogService.Open<EditProdutoDialog>("Editar Produto", new Dictionary<string, object>() { { "Produto", produto } });
+        Console.WriteLine($"Selecionado: {ingredient.Name}");
     }
 
-    void RemoverProduto(Produto produto)
+    private void EditIngredient(Guid id)
     {
-        produtos.Remove(produto);
+        _nav.NavigateTo($"/ingredientes/edit/{id}");
     }
 
-    public class Produto
+    private async Task RemoveIngredient(Guid id)
     {
-        public string Nome { get; set; }
-        public string Categoria { get; set; }
-        public decimal Preco { get; set; }
+        var baseUrl = Configuration["UrlApi"];
+        var endpoint = $"{baseUrl}ingredient/delete/{id}";
+
+        var response = await Http.DeleteAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _toast.ShowSuccess("Ingrediente deletado com sucesso!");
+            Ingredients = Ingredients.Where(i => i.Id != id).ToList();
+        }
+        else
+        {
+            _toast.ShowError("Erro ao deletar ingrediente.");
+        }
     }
 }
