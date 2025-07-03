@@ -1,0 +1,128 @@
+﻿@page "/funcionarios"
+@using Blazored.Toast.Services
+@using DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.Inputs
+@using SmartBurguerValueFront.Components.buttons
+@inject HttpClient Http
+@inject DialogService DialogService
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+@inject NavigationManager _nav
+
+<div class="p-2 p-md-4">
+<h4>Lista de Funcionários</h4>
+
+<div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
+    <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
+    <ButtonPrimary BackgroundColor="bg-orange" Text="Novo Funcionário" Url="/funcionarios/cad" Icon="fas fa-plus icon-inside-input" />
+</div>
+
+@if (isLoading)
+{
+    <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="background-color: var(--orange)" />
+}
+else if (loadError)
+{
+    <RadzenAlert Severity="AlertSeverity.Error">
+        Erro ao carregar os dados da API.
+    </RadzenAlert>
+}
+else
+{
+    <RadzenDataGrid TItem="EmployesDTO" Data="@EmployesFilter" ColumnWidth="200px"
+    AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
+    Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
+        <Columns>
+            <RadzenDataGridColumn TItem="EmployesDTO" Property="Name" Title="Nome" />
+            <RadzenDataGridColumn TItem="EmployesDTO" Property="Position" Title="Cargo" />
+            <RadzenDataGridColumn TItem="EmployesDTO" Title="Tipo de Contrato">
+                <Template Context="employee">
+                    @if (employee.EmploymentType.Equals("Monthly", StringComparison.OrdinalIgnoreCase))
+                    {
+                        <span>Mensal</span>
+                    }
+                    else
+                    {
+                        <span>Diário</span>
+                    }
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="EmployesDTO" Property="MonthlySalary" Title="Salário Mensal" />
+            <RadzenDataGridColumn TItem="EmployesDTO" Property="" Title="% do Markup" />
+            <RadzenDataGridColumn TItem="EmployesDTO" Title="Status">
+                <Template Context="employee">
+                    @(employee.IsActive ? "Ativo" : "Inativo")
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="EmployesDTO" Title="Ações">
+                <Template Context="employee">
+                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditEmployee(employee.Id)" />
+                    <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoveEmployee(employee.Id)" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+}
+</div>
+@code {
+    private List<EmployesDTO> Employes = new();
+    public Guid? EnterpriseId { get; set; }
+    private string filterName = "";
+    private bool isLoading = true;
+    private bool loadError = false;
+    public Decimal? ValueDailySalary { get; set; } = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            EnterpriseId = await _auth.GetEnterpriseId();
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = $"{baseUrl}employee/get-all/by-enterprise-id?enterpriseId={EnterpriseId}";
+
+            Employes  = await Http.GetFromJsonAsync<List<EmployesDTO>>(endpoint) ?? new();
+
+            loadError = false;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
+            loadError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private IEnumerable<EmployesDTO> EmployesFilter =>
+        Employes.Where(p => string.IsNullOrWhiteSpace(filterName) || p.Name.Contains(filterName, StringComparison.OrdinalIgnoreCase));
+
+    private void OnFilterChanged(string value) => filterName = value;
+
+    private void EditEmployee(Guid id)
+    {
+        _nav.NavigateTo($"/funcionarios/edit/{id}");
+    }
+
+    private async Task RemoveEmployee(Guid id)
+    {
+        var baseUrl = Configuration["UrlApi"];
+        var endpoint = $"{baseUrl}employee/delete/{id}";
+
+        var response = await Http.DeleteAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _toast.ShowSuccess("Funcionário deletado com sucesso!");
+            Employes = Employes.Where(i => i.Id != id).ToList();
+        }
+        else
+        {
+            _toast.ShowError("Erro ao deletar funcionário.");
+        }
+    }
+}

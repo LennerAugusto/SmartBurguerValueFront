@@ -30,6 +30,7 @@
 
     [Parameter]
     public EventCallback<Guid> OnSelectedChanged { get; set; }
+
     [Parameter]
     public string Label { get; set; }
     private async Task OnChange(ChangeEventArgs e)
@@ -39,4 +40,4 @@
             await OnSelectedChanged.InvokeAsync(guid);
         }
     }
-}
+}                                

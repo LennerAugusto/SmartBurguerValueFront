@@ -1,0 +1,201 @@
+﻿@page "/funcionarios/cad"
+@page "/funcionarios/edit/{Id:guid?}"
+@using Blazored.Toast.Services
+@using DTOs
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.Inputs
+@using SmartBurguerValueFront.Components.buttons
+@inject NavigationManager _nav
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+
+<div class="d-flex flex-column justify-content-center align-items-center p-4">
+    <h4 class="text-dark">@((Id != null) ? "Editar Funcionário" : "Criar novo Funcionário")</h4>
+
+    <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Nome" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Employee.Name" />
+                </RadzenFormField>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Cargo" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Employee.Position" />
+                </RadzenFormField>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Tipo de Contrato" Style="width: 100%">
+                    <RadzenDropDown TValue="string"
+                                    Data="@ContractTypes"
+                                    @bind-Value="Employee.EmploymentType"
+                                    Style="width: 100%;"
+                                    Placeholder="Selecione um tipo" />
+                </RadzenFormField>
+            </div>
+
+            @if (Employee.EmploymentType == "Diário")
+            {
+                <RadzenFormField Text="Dias de Trabalho e Valores" Style="width: 100%">
+                    <div class="d-flex flex-column gap-2">
+                        @foreach (var input in WorkScheduleInputs)
+                        {
+                            <div class="d-flex align-items-center gap-2">
+                                <RadzenCheckBox @bind-Value="input.Selected" />
+                                <span style="width: 100px;">@input.Day</span>
+
+                                @if (input.Selected)
+                                {
+                                    <RadzenNumeric @bind-Value="input.Value"
+                                                   TValue="decimal?"
+                                                   Step="0.01"
+                                                   Style="width: 120px;"
+                                                   Format="n2" />
+                                }
+                            </div>
+                        }
+                    </div>
+                </RadzenFormField>
+            }
+            else if (Employee.EmploymentType == "Mensal")
+            {
+                <RadzenFormField Text="Salário Mensal" Style="width: 100%">
+                    <RadzenNumeric @bind-Value="@Employee.MonthlySalary"
+                                   TValue="decimal?"
+                                   Step="0.01"
+                                   Style="width: 100%"
+                                   Format="n2" />
+                </RadzenFormField>
+            }
+
+            <div class="col-12 py-3">
+                <label style="display: flex; justify-content:center; align-items: center;">
+                    <RadzenCheckBox @bind-Value="Employee.IsActive" />
+                    <span style="margin-left: 8px;">Ativo?</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-center w-100">
+            <ButtonPrimary Text="Salvar"
+                           BackgroundColor="bg-orange"
+                           OnClick="@SaveEmployee" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    public EmployesDTO Employee { get; set; } = new();
+    public Guid? EnterpriseId { get; set; }
+    public List<string> ContractTypes { get; set; } = new()
+    {
+        "Mensal",
+        "Diário"
+    };
+
+    private List<WorkScheduleInput> WorkScheduleInputs { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        EnterpriseId = await _auth.GetEnterpriseId();
+        Employee = Id != null
+            ? await CarregarFuncionario((Guid)Id)
+            : new EmployesDTO();
+
+        InicializarWorkSchedules();
+    }
+
+    private void InicializarWorkSchedules()
+    {
+        var dias = new[] { "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado-Feira", "Domingo" };
+
+        WorkScheduleInputs = dias.Select(day =>
+        {
+            var existente = Employee.WorkSchedules?.FirstOrDefault(x => x.Weekday == day);
+            return new WorkScheduleInput
+                {
+                    Day = day,
+                    Selected = existente != null,
+                    Value = existente?.DailyRate
+                };
+        }).ToList();
+    }
+
+    private async Task<EmployesDTO> CarregarFuncionario(Guid id)
+    {
+        try
+        {
+            var endpoint = $"{Configuration["UrlApi"]}employee/get-by-id?EmployeeId={id}";
+            return await Http.GetFromJsonAsync<EmployesDTO>(endpoint) ?? new();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar funcionário: {ex.Message}");
+            return new();
+        }
+    }
+
+    public async Task SaveEmployee()
+    {
+        Employee.EnterpriseId = EnterpriseId;
+        if (string.IsNullOrWhiteSpace(Employee.EmploymentType))
+        {
+            _toast.ShowError("Por favor, selecione um tipo de contrato.");
+            return;
+        }
+
+        if (Employee.EmploymentType == "Mensal")
+        {
+            Employee.EmploymentType = "Monthly";
+            Employee.WorkSchedules = null;
+        }
+        else
+        {
+            Employee.EmploymentType = "Daily";
+            Employee.WorkSchedules = WorkScheduleInputs
+           .Where(x => x.Selected)
+           .Select(x => new WorkSchedulesDTO
+               {
+                   Weekday = x.Day,
+                   DailyRate = x.Value
+               }).ToList();
+            var value = Employee.WorkSchedules
+            .Where(ws => ws.DailyRate.HasValue)
+            .Sum(ws => ws.DailyRate.Value * 4); 
+
+            Employee.MonthlySalary = value;
+            Console.WriteLine(value);
+        }
+        var endpoint = Id == null
+            ? $"{Configuration["UrlApi"]}employee/create"
+            : $"{Configuration["UrlApi"]}employee/update";
+
+        var response = Id == null
+            ? await Http.PostAsJsonAsync(endpoint, Employee)
+            : await Http.PutAsJsonAsync(endpoint, Employee);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _toast.ShowSuccess("Funcionário salvo com sucesso!");
+            _nav.NavigateTo("/funcionarios");
+        }
+        else
+        {
+            _toast.ShowError("Erro ao salvar funcionário.");
+        }
+    }
+
+    // Classe auxiliar para a UI
+    public class WorkScheduleInput
+    {
+        public string Day { get; set; }
+        public bool Selected { get; set; }
+        public decimal? Value { get; set; }
+    }
+}
