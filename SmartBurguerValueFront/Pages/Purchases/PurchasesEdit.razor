@@ -1,0 +1,225 @@
+﻿@page "/compras/cad"
+@page "/compras/edit/{Id:guid?}"
+
+@using Blazored.Toast.Services
+@using DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.buttons
+@inject NavigationManager _nav
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+
+<div class="d-flex flex-column justify-content-center align-items-center">
+    <h4 class="text-dark">@((Id != null) ? "Editar Funcionário" : "Criar novo Funcionário")</h4>
+    <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
+        <div class="row mb-4">
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Fornecedor" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Purchase.SupplierName" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Data da Compra" Style="width: 100%">
+                    <RadzenDatePicker @bind-Value="@Purchase.PurchaseDate" DateFormat="dd/MM/yyyy" />
+                </RadzenFormField>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center mb-4">
+            <label style="display: flex; align-items: center;">
+                <RadzenCheckBox @bind-Value="Purchase.IsActive" />
+                <span style="margin-left: 8px;">Compra Ativa?</span>
+            </label>
+        </div>
+
+        <h5 class="text-center" style="color: var(--orange);">Itens da Compra</h5>
+        <div class="row mb-3">
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Ingrediente" Style="width: 100%">
+                    <RadzenDropDown @bind-Value="SelectedIngredientId"
+                                    TValue="Guid"
+                                    Data="@Ingredients"
+                                    TextProperty="Name"
+                                    ValueProperty="InventoryItemId"
+                                    Placeholder="Selecione um ingrediente"
+                                    Style="width: 100%;" />
+
+
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Quantidade" Style="width: 100%">
+                    <RadzenNumeric TValue="decimal" @bind-Value="NewItem.Quantity" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Preço Unitário (R$)" Style="width: 100%">
+                    <RadzenNumeric TValue="decimal" @bind-Value="NewItem.UnitPrice" />
+                </RadzenFormField>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center mb-4">
+            <ButtonPrimary Text="Adicionar Item" BackgroundColor="bg-orange" OnClick="@AddItem" />
+        </div>
+
+        @if (Purchase?.PurchaseItems?.Any() == true)
+        {
+            <RadzenDataGrid @ref="dataGrid" TItem="PurchaseItemsDTO" Data="@Purchase.PurchaseItems" ShowPagingSummary="false" AllowPaging="false" Style="margin-bottom: 20px;">
+                <Columns>
+                    <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="NameItem" Title="Item" />
+                    <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="Quantity" Title="Qtd" />
+                    <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="UnitPrice" Title="Preço (R$)" />
+                    <RadzenDataGridColumn TItem="PurchaseItemsDTO" Title="Remover">
+                        <Template Context="item">
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Click="() => RemoveItem(item)" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+
+        <div class="d-flex justify-content-center">
+            <ButtonPrimary Text="Salvar Compra" BackgroundColor="bg-orange" OnClick="@SavePurchase" />
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    public PurchasesDTO Purchase { get; set; } = new();
+    public PurchaseItemsDTO NewItem { get; set; } = new();
+    public Guid? EnterpriseId { get; set; }
+    private RadzenDataGrid<PurchaseItemsDTO> dataGrid;
+    public List<IngredientsDTO> Ingredients { get; set; } = new();
+
+    public Guid SelectedIngredientId { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            EnterpriseId = await _auth.GetEnterpriseId();
+            var baseUrl = Configuration["UrlApi"];
+            var ingredientsEndpoint = $"{baseUrl}ingredient/get-all/by-enterprise-id?enterpriseId={EnterpriseId}";
+            Ingredients = await Http.GetFromJsonAsync<List<IngredientsDTO>>(ingredientsEndpoint) ?? new List<IngredientsDTO>();
+
+            if (Id != null)
+            {
+                var endpoint = $"{baseUrl}purchase/get-by-id?PurchaseId={Id}";
+                var result = await Http.GetFromJsonAsync<PurchasesDTO>(endpoint);
+                if (result != null)
+                    Purchase = result;
+            }
+            else
+            {
+                Purchase = new PurchasesDTO
+                    {
+                        Id = Guid.NewGuid(),
+                        PurchaseDate = DateTime.Now,
+                        IsActive = true,
+                        PurchaseItems = new List<PurchaseItemsDTO>()
+                    };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao carregar compra ou ingredientes: {ex.Message}");
+            _toast.ShowError("Erro ao carregar dados.");
+        }
+    }
+
+    private async Task AddItem()
+    {
+        var selectedIngredient = Ingredients.FirstOrDefault(i => i.InventoryItemId == SelectedIngredientId);
+
+        if (selectedIngredient == null || NewItem.Quantity <= 0 || NewItem.UnitPrice <= 0)
+        {
+            _toast.ShowError("Selecione um ingrediente e preencha corretamente todos os campos.");
+            return;
+        }
+
+        var itemToAdd = new PurchaseItemsDTO
+            {
+                NameItem = selectedIngredient.Name,
+                PurchaseId = Purchase.Id,
+                UnityOfMeasureId = selectedIngredient.UnitOfMeasureId,
+                Quantity = NewItem.Quantity,
+                UnitPrice = NewItem.UnitPrice,
+                InventoryItemId = selectedIngredient.InventoryItemId
+            };
+
+        Purchase.PurchaseItems.Add(itemToAdd);
+
+        NewItem = new PurchaseItemsDTO();
+        SelectedIngredientId = Guid.Empty;
+
+        if (dataGrid != null)
+            await dataGrid.Reload();
+    }
+
+    private void RemoveItem(PurchaseItemsDTO item)
+    {
+        Purchase.PurchaseItems.Remove(item);
+    }
+
+    private async Task SavePurchase()
+    {
+        if (string.IsNullOrWhiteSpace(Purchase.SupplierName))
+        {
+            _toast.ShowError("Informe o nome do fornecedor.");
+            return;
+        }
+
+        if (!Purchase.PurchaseItems.Any())
+        {
+            _toast.ShowError("Adicione pelo menos um item à compra.");
+            return;
+        }
+
+        try
+        {
+            var baseUrl = Configuration["UrlApi"];
+            Purchase.EnterpriseId = EnterpriseId;
+            Purchase.TotalAmount = Purchase.PurchaseItems.Sum(x => x.Quantity * x.UnitPrice);
+            Purchase.DateUpdated = DateTime.UtcNow;
+
+            HttpResponseMessage response;
+
+            if (Id == null)
+            {
+                Purchase.Id = Guid.NewGuid();
+                Purchase.DateCreated = DateTime.UtcNow;
+
+                var endpoint = $"{baseUrl}purchase/create";
+                response = await Http.PostAsJsonAsync(endpoint, Purchase);
+            }
+            else
+            {
+                var endpoint = $"{baseUrl}purchase/update";
+                response = await Http.PutAsJsonAsync(endpoint, Purchase);
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Compra salva com sucesso!");
+                _nav.NavigateTo("/compras");
+            }
+            else
+            {
+                var msg = await response.Content.ReadAsStringAsync();
+                _toast.ShowError($"Erro ao salvar compra: {msg}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao salvar compra: {ex.Message}");
+            _toast.ShowError("Erro ao salvar compra.");
+        }
+    }
+}

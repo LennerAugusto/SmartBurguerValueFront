@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen.Blazor
 @inherits LayoutComponentBase
 @inject CustomAuthStateProvider AuthProvider
 @inject IJSRuntime JS
@@ -19,6 +20,8 @@
                 </div>
 
                 <article class="content px-4 bg-orange-background h-100">
+                    <RadzenDialog />
+
                     @Body
                 </article>
                 <footer><Footer /></footer>

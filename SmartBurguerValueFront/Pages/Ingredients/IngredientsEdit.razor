@@ -115,6 +115,7 @@
             {
                 Ingredient.UnitOfMeasureId = SelectedUnitTypeId;
                 Ingredient.EnterpriseId = EnterpriseId;
+                Ingredient.InventoryItemId = new Guid();
                 var endpoint = $"{Configuration["UrlApi"]}ingredient/create";
                 var response = await Http.PostAsJsonAsync(endpoint, Ingredient);
                 if (response.IsSuccessStatusCode)

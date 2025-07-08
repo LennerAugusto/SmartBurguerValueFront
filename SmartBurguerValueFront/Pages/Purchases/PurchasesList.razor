@@ -1,0 +1,149 @@
+﻿@page "/compras"
+@using Blazored.Toast.Services
+@using DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.Inputs
+@using SmartBurguerValueFront.Components.Modals
+@using SmartBurguerValueFront.Components.buttons
+@inject HttpClient Http
+@inject DialogService DialogService
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+@inject NavigationManager _nav
+
+<div class="p-2 p-md-4">
+    <h4>Compras</h4>
+
+    <div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
+        <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
+        <ButtonPrimary BackgroundColor="bg-orange" Text="Nova Compra" Url="/compras/cad" Icon="fas fa-plus icon-inside-input" />
+    </div>
+
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="background-color: var(--orange)" />
+    }
+    else if (loadError)
+    {
+        <RadzenAlert Severity="AlertSeverity.Error">
+            Erro ao carregar os dados da API.
+        </RadzenAlert>
+    }
+    else
+    {
+        <RadzenDataGrid TItem="PurchasesDTO" Data="@PurchasesFilter" ColumnWidth="200px"
+        AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
+        Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
+            <Columns>
+                <RadzenDataGridColumn TItem="PurchasesDTO" Property="PurchaseDate" Title="Data da compra" />
+                <RadzenDataGridColumn TItem="PurchasesDTO" Title="Valor">
+                    <Template Context="purchases">
+                        R$ @purchases.TotalAmount.ToString("N2")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="PurchasesDTO" Property="SupplierName" Title="Nome do Fornecedor" />
+                <RadzenDataGridColumn TItem="PurchasesDTO" Title="Status">
+                    <Template Context="purchases">
+                        @(purchases.IsActive ? "Ativo" : "Inativo")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="PurchasesDTO" Title="Ações">
+                    <Template Context="purchases">
+                        <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditPurchase(purchases.Id)" />
+                        <RadzenButton Icon="bar_chart" Size="ButtonSize.Small"
+                                      Style="margin-right: 5px; background-color: var(--orange-light); color: var(--black); border: none"
+                                      Click="() => ShowPurchaseDetails(purchases)" />
+                        <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemovePurchase(purchases.Id)" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
+@code {
+    private List<PurchasesDTO> Purchases = new();
+    public Guid? EnterpriseId { get; set; }
+    private string filterName = "";
+    private bool isLoading = true;
+    private bool loadError = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            EnterpriseId = await _auth.GetEnterpriseId();
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = $"{baseUrl}purchase/get-all/by-enterprise-id?EnterpriseId={EnterpriseId}";
+
+            Purchases = await Http.GetFromJsonAsync<List<PurchasesDTO>>(endpoint) ?? new();
+
+            loadError = false;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
+            loadError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private IEnumerable<PurchasesDTO> PurchasesFilter =>
+     Purchases.Where(p =>
+         string.IsNullOrWhiteSpace(filterName) ||
+         p.PurchaseDate.ToString("dd/MM/yyyy").Contains(filterName, StringComparison.OrdinalIgnoreCase));
+
+    private void OnFilterChanged(string value) => filterName = value;
+
+    private void EditPurchase(Guid id)
+    {
+        _nav.NavigateTo($"/compras/edit/{id}");
+    }
+
+    private async Task RemovePurchase(Guid id)
+    {
+        bool? confirmed = await DialogService.Confirm("Apagar uma compra, altera seus balancetes financeiros. Deseja realmente excluir?", "Confirmação");
+
+        if (confirmed == true)
+        {
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = $"{baseUrl}purchase/delete/{id}";
+
+            var response = await Http.DeleteAsync(endpoint);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Compra deletada com sucesso!");
+                Purchases = Purchases.Where(i => i.Id != id).ToList();
+            }
+            else
+            {
+                _toast.ShowError("Erro ao deletar compra.");
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+    private async Task ShowPurchaseDetails(PurchasesDTO purchase)
+    {
+        await DialogService.OpenAsync<PurchaseDetailsModal>(
+            "Detalhes da Compra",
+            new Dictionary<string, object>() { { "Purchase", purchase } },
+            new DialogOptions()
+                {
+                    Width = "600px",
+                    Height = "auto",
+                    Resizable = true,
+                    Draggable = false,
+                    CloseDialogOnEsc = true
+                });
+    }
+
+}

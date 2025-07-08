@@ -2,6 +2,7 @@ using Blazored.Toast;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Radzen;
 using SmartBurguerValueFront;
 using SmartBurguerValueFront.Services;
 
@@ -17,6 +18,8 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<CustomAuthStateProvider>());
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<TooltipService>();
 
 builder.Services.AddBlazoredToast();
 
