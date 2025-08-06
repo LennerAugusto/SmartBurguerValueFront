@@ -1,0 +1,22 @@
+﻿.title-product {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 120%;
+}
+
+.description-title {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 130%;
+    color: #333333;
+}
+
+.description {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 125%;
+    color: #858585;
+}
+
+@media(max-width:576px) {
+}

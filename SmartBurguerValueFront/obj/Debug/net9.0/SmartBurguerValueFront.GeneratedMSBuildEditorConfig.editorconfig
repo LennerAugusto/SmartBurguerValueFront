@@ -32,6 +32,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Modals/ProductsDetailModal.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNb2RhbHNcUHJvZHVjdHNEZXRhaWxNb2RhbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Modals/PurchaseDetailsModal.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNb2RhbHNcUHVyY2hhc2VEZXRhaWxzTW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -54,6 +58,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Authentication.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aGVudGljYXRpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Combos/CombosEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tYm9zXENvbWJvc0VkaXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Combos/CombosList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tYm9zXENvbWJvc0xpc3QucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Employes/EmployeesList.razor]
@@ -104,6 +116,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xidXR0b25zXEJ1dHRvblByaW1hcnkucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-bserhyidjm
 
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Cards/CardIngredientsProductDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDYXJkc1xDYXJkSW5ncmVkaWVudHNQcm9kdWN0RGV0YWlsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-ppyv3bacoi
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Cards/CardProduct.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDYXJkc1xDYXJkUHJvZHVjdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-6bdnyy2hsa
+
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Cards/SumaryCardHome.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDYXJkc1xTdW1hcnlDYXJkSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-7fwpi3c05f
@@ -116,6 +136,10 @@ build_metadata.AdditionalFiles.CssScope = b-fmhza7kbci
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xJbnB1dHNcU2VsZWN0UHJpbWFyeS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-f3ncappa0p
 
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Sections/SectionProductDetailInsights.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWN0aW9uc1xTZWN0aW9uUHJvZHVjdERldGFpbEluc2lnaHRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-s8nrej0r8j
+
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Layout/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-yn7vn8sgrx
@@ -123,3 +147,11 @@ build_metadata.AdditionalFiles.CssScope = b-yn7vn8sgrx
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-kteqywj1oe
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Combos/CombosDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tYm9zXENvbWJvc0RldGFpbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-cvfesziakr
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Products/ProductDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZHVjdHNcUHJvZHVjdERldGFpbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-c4r1ywktkx

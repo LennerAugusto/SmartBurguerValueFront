@@ -5,12 +5,13 @@
 @if (Purchase != null)
 {
     <div class="p-3" style="color: var(--black);">
-        <h5 style="color: var(--orange);">Detalhes da Compra</h5>
+        <h5 style="color: var(--orange);">Detalhes da Compra:</h5>
 
         <p><strong>Fornecedor:</strong> @Purchase.SupplierName</p>
         <p><strong>Data:</strong> @Purchase.PurchaseDate.ToString("dd/MM/yyyy")</p>
         <p><strong>Valor Total:</strong> R$ @Purchase.TotalAmount.ToString("N2")</p>
 
+        <h5 style="color: var(--orange);">Produtos</h5>
         <RadzenDataGrid TItem="PurchaseItemsDTO" Data="@Purchase.PurchaseItems" ShowPagingSummary="false"
                         AllowPaging="false" Style="margin-top: 15px;">
             <Columns>

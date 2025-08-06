@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using ApexCharts
 @using Microsoft.AspNetCore.Components.Authorization
 @using SmartBurguerValueFront.Components.Cards
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -21,6 +22,29 @@
     </div>
 </div>
 
+<DemoContainer>
+<ApexChart TItem="Order"
+           Title="Basic Sample">
+
+    <ApexPointSeries TItem="Order"
+                Items="orders"
+                 SeriesType="@SeriesType.Area"
+                Name="Gross Value"
+                XValue="@(e => e.Country)"
+                YAggregate="@(e => e.Sum(e => e.GrossValue))"
+                OrderByDescending="e=>e.Y" />
+
+    <ApexPointSeries TItem="Order"
+                Items="orders"
+                 SeriesType="@SeriesType.Area"
+                Name="Net Value"
+                XValue="@(e => e.Country)"
+                YAggregate="@(e => e.Sum(e => e.NetValue))"
+                OrderByDescending="e=>e.Y" />
+</ApexChart>
+</DemoContainer>
+
+
 @code {
     private string? userName;
 
@@ -34,4 +58,18 @@
             userName = user.Identity.Name;
         }
     }
+    public class Order
+    {
+        public string Country { get; set; } = string.Empty;
+        public decimal GrossValue { get; set; }
+        public decimal NetValue { get; set; }
+    }
+
+    private List<Order> orders = new()
+    {
+        new Order { Country = "Brasil", GrossValue = 1000, NetValue = 850 },
+        new Order { Country = "EUA", GrossValue = 1500, NetValue = 1400 },
+        new Order { Country = "Alemanha", GrossValue = 800, NetValue = 700 },
+        new Order { Country = "Japão", GrossValue = 1200, NetValue = 950 }
+    };
 }

@@ -27,6 +27,9 @@
 .bg-transparent{
     background-color: var(--transparent);
 }
+.bg-white {
+    background-color: var(--white);
+}
 .text-black{
     color:var(--black);
 }

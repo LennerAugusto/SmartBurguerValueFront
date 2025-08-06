@@ -1,0 +1,70 @@
+﻿@using DTOs
+@inject NavigationManager _nav
+
+@if (ItemProduct != null)
+{
+    <div class="card-product-container d-flex flex-column" @onclick="NavToDetailProduct">
+        <div style="
+            aspect-ratio: 16/9;
+            width: 100%;
+            border-radius: 12px 12px 0px 0px;
+            background-size: cover;
+            background-position: center;
+           background-color: @(string.IsNullOrEmpty(ItemProduct.ImageUrl) ? "#ccc" : "transparent");
+           background-image: @(string.IsNullOrEmpty(ItemProduct.ImageUrl) ? "none" : $"url('{ItemProduct.ImageUrl}')");
+        ">
+        </div>
+
+        <div class="d-flex flex-column justify-content-between py-2 px-3 flex-grow-1">
+            <h1 class="title-product-card">@ItemProduct.Name</h1>
+            <div class="d-flex flex-row justify-content-between">
+                <p class="description-value">Valor</p>
+                <p class="value-product">R$ @ItemProduct.SellingPrice</p>
+            </div>
+        </div>
+    </div>
+}
+@if(ItemCombo != null)
+{
+    <div class="card-product-container d-flex flex-column" @onclick="NavToDetailCombo">
+        <div style="
+            aspect-ratio: 16/9;
+            width: 100%;
+            border-radius: 12px 12px 0px 0px;
+            background-size: cover;
+            background-position: center;
+            background-color: @(string.IsNullOrEmpty(ItemCombo.ImageUrl) ? "#ccc" : "transparent");
+            background-image: @(string.IsNullOrEmpty(ItemCombo.ImageUrl) ? "none" : $"url('{ItemCombo.ImageUrl}')");
+            ">
+        </div>
+
+        <div class="d-flex flex-column justify-content-between py-2 px-3 flex-grow-1">
+            <h1 class="title-product-card">@ItemCombo.Name</h1>
+            <div class="d-flex flex-row justify-content-between">
+                <p class="description-value">Valor</p>
+                <p class="value-product">R$ @ItemCombo.SellingPrice</p>
+            </div>
+        </div>
+    </div>
+}
+@code {
+    [Parameter]
+    public ProductsDTO ItemProduct { get; set; }
+    [Parameter]
+    public ComboDTO ItemCombo { get; set; }
+
+    private void NavToDetailProduct()
+    {
+        if (ItemProduct != null)
+        {
+            _nav.NavigateTo($"/produtos/detalhe/{ItemProduct.Id}");
+        }
+    }
+    private void NavToDetailCombo()
+    {
+        if (ItemCombo != null)
+        {
+            _nav.NavigateTo($"/combos/detalhe/{ItemCombo.Id}");
+        }
+    }
+}

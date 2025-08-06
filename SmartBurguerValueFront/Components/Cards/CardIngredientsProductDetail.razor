@@ -1,0 +1,36 @@
+﻿@using DTOs
+<div class="container-card-ingredient">
+    <div class="d-flex flex-column justify-content-start">
+        @if (Product != null && Product.Ingredients != null)
+        {
+            <h1 class="title-card-ingredient">Ingredientes</h1>
+            @foreach (var item in Product.Ingredients)
+            {
+                <div class="d-flex flex-row align-items-center gap-2">
+                    <span class="circle-grey"></span>
+                    <span class="ingredient-name">@item.Name</span>
+                </div>
+
+            }
+        }
+        @if(ListProducts != null)
+        {
+            <h1 class="title-card-ingredient">Produtos</h1>
+            @foreach (var item in ListProducts)
+            {
+                <div class="d-flex flex-row align-items-center gap-2">
+                    <span class="circle-grey"></span>
+                    <span class="ingredient-name">@item.Name</span>
+                </div>
+
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] 
+    public ProductCreateDTO Product { get; set; }
+    [Parameter]
+    public List<ProductsDTO> ListProducts { get; set; }
+}

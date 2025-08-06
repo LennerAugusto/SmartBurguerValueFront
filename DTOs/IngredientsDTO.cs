@@ -8,12 +8,14 @@ namespace DTOs
 {
     public class IngredientsDTO : BaseDTO
     {
+       
         public string Name { get; set; }
+        public string BaseUnit { get; set; }
         public string? UnitOfMeasureName { get; set; }
         public Guid UnitOfMeasureId { get; set; }
         public Guid InventoryItemId { get; set; }
         public Guid? EnterpriseId { get; set; }
-
+        public decimal? Quantity { get; set; }
 
     }
 }

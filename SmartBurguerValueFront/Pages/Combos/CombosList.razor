@@ -1,4 +1,5 @@
-﻿@page "/produtos"
+﻿@page "/combos"
+
 @using Blazored.Toast.Services
 @using DTOs
 @using Microsoft.AspNetCore.Components.Authorization
@@ -15,11 +16,11 @@
 @inject NavigationManager _nav
 
 <div class="p-2 p-md-4">
-    <h4>Produtos</h4>
+    <h4>Combos</h4>
 
     <div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
         <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
-        <ButtonPrimary BackgroundColor="bg-orange" Text="Novo Produto" Url="/produtos/cad" Icon="fas fa-plus icon-inside-input" />
+        <ButtonPrimary BackgroundColor="bg-orange" Text="Novo Produto" Url="/combos/cad" Icon="fas fa-plus icon-inside-input" />
     </div>
 
     @if (isLoading)
@@ -34,33 +35,33 @@
     }
     else
     {
-        <RadzenDataGrid TItem="ProductsDTO" Data="@ProductsFilter" ColumnWidth="200px"
+        <RadzenDataGrid TItem="ComboDTO" Data="@CombosFilter" ColumnWidth="200px"
                         AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
                         Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
             <Columns>
-                <RadzenDataGridColumn TItem="ProductsDTO" Property="Name" Title="Nome" />
-                <RadzenDataGridColumn TItem="ProductsDTO" Title="Preço de venda">
-                    <Template Context="products">
-                        R$ @(products.SellingPrice)
-                    </Template>
-                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ProductsDTO" Title="Custo de produção">
-                    <Template Context="products">
-                        R$ @(products.CPV)
+                <RadzenDataGridColumn TItem="ComboDTO" Property="Name" Title="Nome" />
+                <RadzenDataGridColumn TItem="ComboDTO" Title="Preço de venda">
+                    <Template Context="combo">
+                        R$ @(combo.SellingPrice)
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ProductsDTO" Title="Status">
+                <RadzenDataGridColumn TItem="ComboDTO" Title="Custo de produção">
+                    <Template Context="combo">
+                        R$ @(combo.CPV)
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ComboDTO" Title="Status">
                     <Template Context="products">
                         @(products.IsActive ? "Ativo" : "Inativo")
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ProductsDTO" Title="Ações">
-                    <Template Context="products">
-                        <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditProduct(products.Id)" />
+                <RadzenDataGridColumn TItem="ComboDTO" Title="Ações">
+                    <Template Context="combo">
+                        <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditCombo(combo.Id)" />
                         <RadzenButton Icon="bar_chart" Size="ButtonSize.Small"
                                       Style="margin-right: 5px; background-color: var(--orange-light); color: var(--black); border: none"
-                                      Click="() => ShowProductDetails(products.Id)" />
-                        <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoveProduct(products.Id)" />
+                                      Click="() => ShowComboDetails(combo.Id)" />
+                        <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoveCombo(combo.Id)" />
                     </Template>
                 </RadzenDataGridColumn>
             </Columns>
@@ -68,7 +69,7 @@
     }
 </div>
 @code {
-    private List<ProductsDTO> Products = new();
+    private List<ComboDTO> Combos = new();
     public Guid? EnterpriseId { get; set; }
     private string filterName = "";
     private bool isLoading = true;
@@ -80,9 +81,9 @@
         {
             EnterpriseId = await _auth.GetEnterpriseId();
             var baseUrl = Configuration["UrlApi"];
-            var endpoint = $"{baseUrl}products/get-all/by-enterprise-id?EnterpriseId={EnterpriseId}";
+            var endpoint = $"{baseUrl}combo/get-all/by-enterprise-id?EnterpriseId={EnterpriseId}";
 
-            Products = await Http.GetFromJsonAsync<List<ProductsDTO>>(endpoint) ?? new();
+            Combos  = await Http.GetFromJsonAsync<List<ComboDTO>>(endpoint) ?? new();
 
             loadError = false;
         }
@@ -97,37 +98,37 @@
         }
     }
 
-    private IEnumerable<ProductsDTO> ProductsFilter =>
-     Products.Where(p =>
+    private IEnumerable<ComboDTO> CombosFilter =>
+     Combos.Where(p =>
          string.IsNullOrWhiteSpace(filterName) ||
          p.Name.Contains(filterName, StringComparison.OrdinalIgnoreCase));
 
     private void OnFilterChanged(string value) => filterName = value;
 
-    private void EditProduct(Guid id)
+    private void EditCombo(Guid id)
     {
-        _nav.NavigateTo($"/produtos/edit/{id}");
+        _nav.NavigateTo($"/combos/edit/{id}");
     }
 
-    private async Task RemoveProduct(Guid id)
+    private async Task RemoveCombo(Guid id)
     {
-        bool? confirmed = await DialogService.Confirm("Apagar um produto, altera seus balancetes financeiros e suas possibilidades de venda. Deseja realmente excluir?", "Confirmação");
+        bool? confirmed = await DialogService.Confirm("Apagar um combo, altera seus balancetes financeiros e suas possibilidades de venda. Deseja realmente excluir?", "Confirmação");
 
         if (confirmed == true)
         {
             var baseUrl = Configuration["UrlApi"];
-            var endpoint = $"{baseUrl}products/delete/{id}";
+            var endpoint = $"{baseUrl}combo/delete/{id}";
 
             var response = await Http.DeleteAsync(endpoint);
 
             if (response.IsSuccessStatusCode)
             {
-                _toast.ShowSuccess("Produto deletado com sucesso!");
-                Products = Products.Where(i => i.Id != id).ToList();
+                _toast.ShowSuccess("Combo deletado com sucesso!");
+                Combos = Combos.Where(i => i.Id != id).ToList();
             }
             else
             {
-                _toast.ShowError("Erro ao deletar produto.");
+                _toast.ShowError("Erro ao deletar combo.");
             }
         }
         else
@@ -135,9 +136,9 @@
             return;
         }
     }
-    private async Task ShowProductDetails(Guid id)
+    private async Task ShowComboDetails(Guid id)
     {
-        _nav.NavigateTo($"/produto/detalhes/{id}");
+        _nav.NavigateTo($"/combos/detalhes/{id}");
     }
 
 }

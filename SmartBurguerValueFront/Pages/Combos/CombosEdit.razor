@@ -1,0 +1,266 @@
+﻿@page "/combos/cad"
+@page "/combos/edit/{Id:guid?}"
+
+@using DTOs
+@using Blazored.Toast.Services
+@using Radzen
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.buttons
+@inject HttpClient Http
+@inject NavigationManager _nav
+@inject IConfiguration Configuration
+@inject IToastService _toast
+@inject CustomAuthStateProvider _auth
+<div class="d-flex flex-column justify-content-center align-items-center p-4">
+    <h4 class="text-dark text-center">@((Id != null) ? "Editar Combo" : "Criar Novo Combo")</h4>
+
+    <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="image-upload-box">
+                    <label for="upload-image" class="image-box-label">
+                        @if (string.IsNullOrEmpty(Combo.ImageUrl))
+                        {
+                            <div class="image-placeholder">
+                                <span class="upload-icon">📁</span>
+                                <span class="upload-text">Clique para enviar imagem</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="@Combo.ImageUrl" alt="Preview" class="image-preview" />
+                        }
+                    </label>
+
+                    <InputFile id="upload-image" class="image-input" OnChange="HandleImageUpload" accept="image/*" />
+                </div>
+
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Nome" Style="width: 100%;">
+                    <RadzenTextBox @bind-Value="Combo.Name" Style="width: 100%;" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Descrição" Style="width: 100%;">
+                    <RadzenTextBox @bind-Value="Combo.Description" Style="width: 100%;" />
+                </RadzenFormField>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Preço de Venda (R$)" Style="width: 100%;">
+                    <RadzenNumeric TValue="decimal?" @bind-Value="Combo.SellingPrice" Style="width: 100%;" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Margem Desejada (%)" Style="width: 100%;">
+                    <RadzenNumeric TValue="decimal?" @bind-Value="Combo.DesiredMargin" Style="width: 100%;" />
+                </RadzenFormField>
+            </div>
+        </div>
+        <div class="col-12 py-3">
+            <label style="display: flex; justify-content:center; align-items: center;">
+                <RadzenCheckBox @bind-Value="Combo.IsActive" />
+                <span style="margin-left: 8px;">Ativo?</span>
+            </label>
+        </div>
+
+        <h5 class="text-center" style="color: var(--orange);">Produtos</h5>
+        <div class="row mb-3 d-flex flex-row justify-content-center">
+            <div class="col-12 col-md-8">
+                @if (Products != null)
+                {
+                    <RadzenFormField Text="Selecione o produto" Style="width: 100%">
+                        <RadzenDropDown @bind-Value="SelectedProductId"
+                                        TValue="Guid"
+                                        Data="@Products"
+                                        TextProperty="Name"
+                                        ValueProperty="Id"
+                                        Placeholder="Selecione o produto"
+                                        Style="width: 100%" />
+                    </RadzenFormField>
+
+                }
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mb-4">
+            <ButtonPrimary Text="Adicionar Produto" BackgroundColor="bg-orange" OnClick="@AddProduct" />
+        </div>
+        @if (Combo.Products != null)
+        {
+            <RadzenDataGrid TItem="ProductsDTO" Data="@Combo.Products" ShowPagingSummary="false" AllowPaging="false" Style="margin-bottom: 20px;">
+                <Columns>
+                    <RadzenDataGridColumn TItem="ProductsDTO" Property="Name" Title="Nome do produto" />
+                    <RadzenDataGridColumn TItem="ProductsDTO" Title="Remove">
+                        <Template Context="item">
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Click="@(() => RemoveProduct(item))" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+        <div class="d-flex justify-content-center">
+            <ButtonPrimary Text="Salvar Combo" BackgroundColor="bg-orange" OnClick="@SaveCombo" />
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter] public Guid? Id { get; set; }
+    public ComboDTO Combo { get; set; } = new ComboDTO();
+    public List<ProductsDTO> Products { get; set; } = new();
+    public Guid SelectedProductId { get; set; }
+    private string? selectedFileName;
+    private Guid NewIngredientId { get; set; }
+    public Guid? EnterpriseId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        EnterpriseId = await _auth.GetEnterpriseId();
+        var baseUrl = Configuration["UrlApi"];
+
+        Products = await Http.GetFromJsonAsync<List<ProductsDTO>>($"{baseUrl}products/get-all/by-enterprise-id?EnterpriseId={EnterpriseId}") ?? new();
+
+        if (Id != null)
+        {
+            var result = await Http.GetFromJsonAsync<ComboDTO>($"{baseUrl}combo/get-by-id?comboId={Id}");
+            if (result != null)
+                Combo = result;
+
+        }
+        else
+        {
+            Combo = new ComboDTO
+                {
+                    Id = Guid.NewGuid(),
+                    EnterpriseId = EnterpriseId.Value,
+                    Products = new List<ProductsDTO>()
+                };
+        }
+    }
+    private void AddProduct()
+    {
+        Console.WriteLine(SelectedProductId);
+        var product = Products.FirstOrDefault(x => x.Id == SelectedProductId);
+        if (product == null)
+        {
+            _toast.ShowError("Selecione um produto válido");
+            return;
+        }
+
+        if (Combo.Products.Any(x => x.Id == product.Id))
+        {
+            _toast.ShowError("Product já adicionado");
+            return;
+        }
+
+        var newList = Combo.Products.ToList();
+        newList.Add(new ProductsDTO
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                SellingPrice = product.SellingPrice,
+                ImageUrl = product.ImageUrl,
+                DesiredMargin = product.DesiredMargin,
+                SuggestedPrice = product.SuggestedPrice,
+                Margin = product.Margin,
+                Markup = product.Markup,
+                CPV = product.CPV,
+                CMV = product.CMV,
+            });
+
+        Combo.Products = newList;
+
+        SelectedProductId = Guid.Empty;
+
+        StateHasChanged();
+    }
+
+    private void RemoveProduct(ProductsDTO item)
+    {
+        var newList = Combo.Products.ToList();
+        newList.Remove(item);
+        Combo.Products = newList;
+
+        StateHasChanged();
+
+    }
+
+    private async Task SaveCombo()
+    {
+        if (string.IsNullOrWhiteSpace(Combo.Name) || Combo.SellingPrice <= 0)
+        {
+            _toast.ShowError("Preencha os campos obrigatórios");
+            return;
+        }
+
+        try
+        {
+            ComboDTO ComboRequestDTO = new ComboDTO
+                {
+                    Id = Combo.Id,
+                    Name = Combo.Name,
+                    Description = Combo.Description,
+                    SellingPrice = Combo.SellingPrice,
+                    DesiredMargin = Combo.DesiredMargin,
+                    ImageUrl = Combo.ImageUrl,
+                    Products = Combo.Products.Select(i => new ProductsDTO
+                    {
+                        Id = i.Id,
+                        Name = i.Name,
+                        Description = i.Description,
+                        SellingPrice = i.SellingPrice,
+                        ImageUrl = i.ImageUrl,
+                        DesiredMargin = i.DesiredMargin,
+                        SuggestedPrice = i.SuggestedPrice,
+                        Margin = i.Margin,
+                        Markup = i.Markup,
+                        CPV = i.CPV,
+                        CMV = i.CMV,
+                    }).ToList(),
+                    EnterpriseId = Combo.EnterpriseId,
+                    IsActive = Combo.IsActive
+                };
+            Console.WriteLine(ComboRequestDTO.DesiredMargin);
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = Id == null
+                ? $"{baseUrl}combo/create"
+                : $"{baseUrl}combo/update";
+
+            var response = Id == null
+                ? await Http.PostAsJsonAsync(endpoint, ComboRequestDTO)
+                : await Http.PutAsJsonAsync(endpoint, ComboRequestDTO);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Combo salvo com sucesso!");
+                _nav.NavigateTo("/combos");
+            }
+            else
+            {
+                var msg = await response.Content.ReadAsStringAsync();
+                _toast.ShowError($"Erro ao salvar combo: {msg}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao salvar combo: {ex.Message}");
+            _toast.ShowError("Um Erro ao salvar o combo");
+        }
+    }
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024); // 5 MB
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        var bytes = ms.ToArray();
+
+        Combo.ImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes)}";
+    }
+}

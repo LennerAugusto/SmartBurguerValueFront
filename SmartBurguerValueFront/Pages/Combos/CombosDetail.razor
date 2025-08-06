@@ -1,0 +1,106 @@
+﻿@page "/combos/detalhes/{Id:guid?}"
+
+@using DTOs
+@using Radzen
+@using SmartBurguerValueFront.Components.Cards
+@using SmartBurguerValueFront.Components.Sections
+@using SmartBurguerValueFront.Components.buttons
+@inject HttpClient Http
+@inject DialogService DialogService
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+
+<div class="container-primary">
+    <div class="row">
+        <div class="col-12 col-md-8">
+            <div class="bg-white p-3 p-md-4" style="border-radius:12px">
+                @if (Combo != null)
+                {
+                    <div style="aspect-ratio: 16/9; width: 50%; max-height: 300px; margin: 0 auto; border-radius: 12px;
+                        background-color: @(string.IsNullOrEmpty(Combo.ImageUrl) ? "#ccc" : "transparent");
+                        background-image: @(string.IsNullOrEmpty(Combo.ImageUrl) ? "none" : $"url('{Combo.ImageUrl}')");
+                        background-size: cover;
+                        background-position: center;">
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-8">
+                            <div class="d-flex flex-column">
+                                <h1 class="title-product text-black">@Combo.Name</h1>
+                                <p class="description-title">Descrição</p>
+                                <p class="description">@Combo.Description</p>
+                                <p class="description-title">Custo do Produto</p>
+                                <p class="description">R$ @Combo.CPV</p>
+                                <p class="description-title">Valor Sugerido</p>
+                                <p class="description">R$ @Combo.SugestedPrice</p>
+                                <SectionProductDetailInsights DesirredMargin="@Combo.DesiredMargin" Margin="@Combo.Margin" Markup="@Combo.Markup" CMV="@Combo.CMV" CPV="@Combo.CPV" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="d-flex flex-column justify-content-center gap-3">
+                                <h3 class="title-product text-orange">R$ 23,00</h3>
+                                <CardIngredientsProductDetail ListProducts="@Combo.Products" />
+                                <ButtonPrimary Text="Editar Combo" BackgroundColor="bg-orange" Icon="fas fa-edit" Class="text-center" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <h1 class="title-product mt-2 mt-md-0">Mais Combos</h1>
+                <div class="row">
+                    @if (Combos != null)
+                    {
+                        @foreach (var item in Combos.Take(4))
+                        {
+                            <div class="col-12 col-lg-6 mt-3">
+                                <CardProduct ItemCombo="@item" />
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="mt-3">
+                    <ButtonPrimary Text="Ver Mais Combos" BackgroundColor="bg-orange" Class="text-center" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@* }
+ *@
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    [Parameter] public ComboDTO Combo { get; set; } = default!;
+    public List<ComboDTO> Combos { get; set; } = new List<ComboDTO>();
+    private bool isLoading = true;
+    private bool loadError = false;
+    private Guid? EnterpriseId { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            EnterpriseId = await _auth.GetEnterpriseId();
+            var baseUrl = Configuration["UrlApi"];
+            var endpointCombo = $"{baseUrl}combo/get-by-id?comboId={Id}";
+            var endpointCombos = $"{baseUrl}combo/get-all/by-enterprise-id?EnterpriseId={EnterpriseId}";
+
+            Combo = await Http.GetFromJsonAsync<ComboDTO>(endpointCombo) ?? new();
+            Combos = await Http.GetFromJsonAsync<List<ComboDTO>>(endpointCombos) ?? new List<ComboDTO>();
+            loadError = false;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
+            loadError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+        StateHasChanged();
+    }
+}

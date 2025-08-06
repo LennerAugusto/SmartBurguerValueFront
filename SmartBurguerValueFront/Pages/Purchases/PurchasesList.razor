@@ -38,7 +38,11 @@
         AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
         Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
             <Columns>
-                <RadzenDataGridColumn TItem="PurchasesDTO" Property="PurchaseDate" Title="Data da compra" />
+                <RadzenDataGridColumn TItem="PurchasesDTO" Title="Data da Compra">
+                    <Template Context="purchases">
+                        @purchases.PurchaseDate.ToString("dd/MM/yyyy")
+                    </Template>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="PurchasesDTO" Title="Valor">
                     <Template Context="purchases">
                         R$ @purchases.TotalAmount.ToString("N2")

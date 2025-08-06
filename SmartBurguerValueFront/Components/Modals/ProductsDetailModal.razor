@@ -1,0 +1,63 @@
+﻿@using DTOs
+@using Radzen
+@using Radzen.Blazor
+@inherits ComponentBase
+@inject IConfiguration Configuration
+@inject HttpClient Http
+
+@if (Product != null)
+{
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="background-color: var(--orange)" />
+    }
+    else if (loadError)
+    {
+        <RadzenAlert Severity="AlertSeverity.Error">
+            Erro ao carregar os dados da API.
+        </RadzenAlert>
+    }
+    <div class="p-3" style="color: var(--black);">
+        <h5 style="color: var(--orange);">Detalhes da Compra</h5>
+
+        <p><strong>Nome do produto</strong> @Analysi.Product.Name</p>
+        <p><strong>Data:</strong> @Analysi.AnalisysDate.ToString("dd/MM/yyyy")</p>
+        <p><strong>Valor de Venda:</strong> R$ @Product.SellingPrice</p>
+        <p><strong>Valor Sugerido:</strong> R$ @Analysi.SellingPriceSuggested</p>
+        <p><strong>Markup:</strong> @Analysi.Markup</p>
+        <p><strong>Margem Atual:</strong> @Analysi.Margin</p>
+        <p><strong>Margem Desejada:</strong> @Product.DesiredMargin</p>
+        <p><strong>CPV:</strong> @Analysi.CPV</p>
+
+    </div>
+}
+
+@code {
+    [Parameter] public ProductsDTO Product { get; set; } = default!;
+    public ProductCostAnalysisDTO Analysi { get; set; }
+    private bool isLoading = true;
+    private bool loadError = false;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var ProductId = Product.Id;
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = $"{baseUrl}product-analyses/get-analyses/by-product-id?productId={ProductId}";
+
+            Analysi = await Http.GetFromJsonAsync<ProductCostAnalysisDTO>(endpoint) ?? new();
+
+            loadError = false;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
+            loadError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+}

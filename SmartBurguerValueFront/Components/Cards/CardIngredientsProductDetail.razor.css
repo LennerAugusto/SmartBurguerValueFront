@@ -1,0 +1,23 @@
+﻿.container-card-ingredient {
+    border: 1px solid #EBEBEB;
+    border-radius: 12px;
+    padding: 8px 16px;
+}
+.title-card-ingredient {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 120%;
+    color: #333333;
+}
+.circle-grey {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #DEDEDE;
+}
+.ingredient-name {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 130%;
+    color: #333333;
+}

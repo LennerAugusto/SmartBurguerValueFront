@@ -1,0 +1,20 @@
+﻿.section-product-insight-container {
+    border-radius: 12px;
+    background-color: #F7F7F7;
+    padding:16px;
+}
+.title-insight {
+    font-size: 12px;
+    font-weight: 400;
+    color: #858585;
+    line-height: 130%;
+}
+.name-insight {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333333;
+    line-height: 120%;
+}
+.border-right-opacity {
+    border-right: 1px solid #EBEBEB;
+}

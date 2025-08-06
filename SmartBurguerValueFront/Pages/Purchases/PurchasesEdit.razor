@@ -1,4 +1,5 @@
-﻿@page "/compras/cad"
+﻿
+@page "/compras/cad"
 @page "/compras/edit/{Id:guid?}"
 
 @using Blazored.Toast.Services
@@ -14,7 +15,7 @@
 @inject IToastService _toast
 
 <div class="d-flex flex-column justify-content-center align-items-center">
-    <h4 class="text-dark">@((Id != null) ? "Editar Funcionário" : "Criar novo Funcionário")</h4>
+    <h4 class="text-dark">@((Id != null) ? "Editar Compra" : "Criar nova compra")</h4>
     <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
         <div class="row mb-4">
             <div class="col-12 col-md-6">
@@ -44,7 +45,7 @@
                                     TValue="Guid"
                                     Data="@Ingredients"
                                     TextProperty="Name"
-                                    ValueProperty="InventoryItemId"
+                                    ValueProperty="Id"
                                     Placeholder="Selecione um ingrediente"
                                     Style="width: 100%;" />
 
@@ -136,7 +137,7 @@
 
     private async Task AddItem()
     {
-        var selectedIngredient = Ingredients.FirstOrDefault(i => i.InventoryItemId == SelectedIngredientId);
+        var selectedIngredient = Ingredients.FirstOrDefault(i => i.Id == SelectedIngredientId);
 
         if (selectedIngredient == null || NewItem.Quantity <= 0 || NewItem.UnitPrice <= 0)
         {
@@ -151,6 +152,7 @@
                 UnityOfMeasureId = selectedIngredient.UnitOfMeasureId,
                 Quantity = NewItem.Quantity,
                 UnitPrice = NewItem.UnitPrice,
+                IngredientId = selectedIngredient.Id,
                 InventoryItemId = selectedIngredient.InventoryItemId
             };
 

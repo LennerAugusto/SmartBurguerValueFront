@@ -1,8 +1,289 @@
 ﻿@page "/produtos/cad"
-@page "/produtos/edit/{id:guid}"
+@page "/produtos/edit/{Id:guid?}"
 
-<h3>ProductsEdit</h3>
+@using DTOs
+@using Blazored.Toast.Services
+@using Radzen
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.buttons
+@inject HttpClient Http
+@inject NavigationManager _nav
+@inject IConfiguration Configuration
+@inject IToastService _toast
+@inject CustomAuthStateProvider _auth
+<div class="d-flex flex-column justify-content-center align-items-center p-4">
+    <h4 class="text-dark text-center">@((Id != null) ? "Editar Produto" : "Criar Novo Produto")</h4>
 
+    <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="image-upload-box">
+                    <label for="upload-image" class="image-box-label">
+                        @if (string.IsNullOrEmpty(Product.ImageUrl))
+                        {
+                            <div class="image-placeholder">
+                                <span class="upload-icon">📁</span>
+                                <span class="upload-text">Clique para enviar imagem</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="@Product.ImageUrl" alt="Preview" class="image-preview" />
+                        }
+                    </label>
+
+                    <InputFile id="upload-image" class="image-input" OnChange="HandleImageUpload" accept="image/*" />
+                </div>
+
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Nome" Style="width: 100%;">
+                    <RadzenTextBox @bind-Value="Product.Name" Style="width: 100%;" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Descrição" Style="width: 100%;">
+                    <RadzenTextBox @bind-Value="Product.Description" Style="width: 100%;" />
+                </RadzenFormField>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Preço de Venda (R$)" Style="width: 100%;">
+                    <RadzenNumeric TValue="decimal?" @bind-Value="Product.SellingPrice" Style="width: 100%;" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Margem Desejada (%)" Style="width: 100%;">
+                    <RadzenNumeric TValue="decimal?" @bind-Value="Product.DesiredMargin" Style="width: 100%;" />
+                </RadzenFormField>
+            </div>
+        </div>
+        <div class="col-12 py-3">
+            <label style="display: flex; justify-content:center; align-items: center;">
+                <RadzenCheckBox @bind-Value="Product.IsActive" />
+                <span style="margin-left: 8px;">Ativo?</span>
+            </label>
+        </div>
+        <h5 class="text-center" style="color: var(--orange);">Ingredientes</h5>
+        <div class="row mb-3">
+            <div class="col-12 col-md-8">
+                @if (Ingredients != null)
+                {
+                    <RadzenFormField Text="selecione o ingrediente" Style="width: 100%;">
+                        <RadzenDropDown Value="@SelectedIngredientId"
+                        ValueChanged="@OnIngredientChanged"
+                        ValueExpression="@(() => SelectedIngredientId)"
+                        TValue="Guid"
+                        Data="@Ingredients"
+                        TextProperty="Name"
+                        ValueProperty="Id"
+                        Placeholder="Selecione o ingrediente"
+                        Style="width: 100%;" />
+                    </RadzenFormField>
+                }
+            </div>
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Quantidade utilizada">
+                    <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 4px; padding: 2px 4px; width: 200px;">
+                        <RadzenNumeric TValue="decimal"
+                        @bind-Value="NewIngredientQuantity"
+                        Placeholder="0"
+                        Style="border: none; outline: none; flex: 1;" />
+                        <span style="white-space: nowrap; color: #666; font-size: 14px; padding-left: 6px;">
+                            @((UnitTypeSelected?.BaseUnit) ?? "")
+                        </span>
+                    </div>
+                </RadzenFormField>
+
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mb-4">
+            <ButtonPrimary Text="Adicionar ingrediente" BackgroundColor="bg-orange" OnClick="@AddIngredient" />
+        </div>
+        @if (Product.Ingredients != null)
+        {
+            <RadzenDataGrid TItem="IngredientsDTO" Data="@Product.Ingredients" ShowPagingSummary="false" AllowPaging="false" Style="margin-bottom: 20px;">
+                <Columns>
+                    <RadzenDataGridColumn TItem="IngredientsDTO" Property="Name" Title="Ingrediente" />
+                    <RadzenDataGridColumn TItem="IngredientsDTO" Title="Quantidade">
+                        <Template Context="ingredients">
+                            @ingredients.Quantity @ingredients.BaseUnit
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="IngredientsDTO" Title="Remove">
+                        <Template Context="item">
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Click="@(() => RemoveIngredient(item))" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+        <div class="d-flex justify-content-center">
+            <ButtonPrimary Text="Salvar Produto" BackgroundColor="bg-orange" OnClick="@SaveProduct" />
+        </div>
+    </div>
+</div>
 @code {
+    [Parameter] public Guid? Id { get; set; }
 
+    public ProductsDTO Product { get; set; } = new();
+    public List<IngredientsDTO> Ingredients { get; set; } = new();
+    public Guid SelectedIngredientId { get; set; }
+    public UnitTypesDTO UnitTypeSelected { get; set; }
+    public ProductCreateDTO ProductRequestDTO { get; set; } = new();
+    public decimal NewIngredientQuantity { get; set; }
+    private string? selectedFileName;
+    private Guid NewIngredientId { get; set; }
+    public Guid? EnterpriseId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        EnterpriseId = await _auth.GetEnterpriseId();
+        var baseUrl = Configuration["UrlApi"];
+
+        Ingredients = await Http.GetFromJsonAsync<List<IngredientsDTO>>($"{baseUrl}ingredient/get-all/by-enterprise-id?enterpriseId={EnterpriseId}") ?? new();
+
+        if (Id != null)
+        {
+            var result = await Http.GetFromJsonAsync<ProductsDTO>($"{baseUrl}products/get-by-id/with-ingredients?ProductId={Id}");
+            if (result != null) 
+            Product = result;
+          
+        }
+        else
+        {
+            Product = new ProductsDTO
+                {
+                    Id = Guid.NewGuid(),
+                    EnterpriseId = EnterpriseId.Value,
+                    Ingredients = new List<IngredientsDTO>()
+                };
+        }
+    }
+    private async Task OnIngredientChanged(Guid value)
+    {
+        Guid unityTypeId = Guid.Empty;
+        SelectedIngredientId = value;
+        foreach (var ingredient in Ingredients)
+        {
+            if (ingredient.Id == SelectedIngredientId)
+            {
+                unityTypeId = ingredient.UnitOfMeasureId;
+                break;
+            }
+        }
+        var baseUrl = Configuration["UrlApi"];
+        UnitTypeSelected = await Http.GetFromJsonAsync<UnitTypesDTO>($"{baseUrl}unit-types/get-by-id?unityTypeId={unityTypeId}") ?? new();
+        StateHasChanged();
+    }
+    private void AddIngredient()
+    {
+        var ingredient = Ingredients.FirstOrDefault(x => x.Id == SelectedIngredientId);
+        Console.WriteLine(NewIngredientQuantity);
+        if (ingredient == null || NewIngredientQuantity <= 0)
+        {
+            _toast.ShowError("Selecione um ingrediente válido");
+            return;
+        }
+
+        if (Product.Ingredients.Any(x => x.Id == ingredient.Id))
+        {
+            _toast.ShowError("Ingrediente já adicionado");
+            return;
+        }
+
+        var newList = Product.Ingredients.ToList();
+        newList.Add(new IngredientsDTO
+            {
+                Id = ingredient.Id,
+                Name = ingredient.Name,
+                Quantity = NewIngredientQuantity
+            });
+
+        Product.Ingredients = newList;
+
+        SelectedIngredientId = Guid.Empty;
+        NewIngredientQuantity = 0;
+        UnitTypeSelected = null;
+
+        StateHasChanged();
+    }
+
+    private void RemoveIngredient(IngredientsDTO item)
+    {
+        var newList = Product.Ingredients.ToList();
+        newList.Remove(item);
+        Product.Ingredients = newList;
+
+        StateHasChanged();
+
+    }
+
+    private async Task SaveProduct()
+    {
+        if (string.IsNullOrWhiteSpace(Product.Name) || Product.SellingPrice <= 0)
+        {
+            _toast.ShowError("Preencha os campos obrigatórios");
+            return;
+        }
+
+        try
+        {
+            ProductRequestDTO = new ProductCreateDTO
+                {
+                    Id = Product.Id,
+                    Name = Product.Name,
+                    Description = Product.Description,
+                    SellingPrice = Product.SellingPrice,
+                    DesiredMargin = Product.DesiredMargin,
+                    ImageUrl = Product.ImageUrl,
+                    Ingredients = Product.Ingredients.Select(i => new IngredientCreateProductDTO
+                    {
+                        Id = i.Id,
+                        Quantity = i.Quantity,
+                        Name = i.Name
+                    }).ToList(),
+                    EnterpriseId = EnterpriseId
+                };
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = Id == null
+                ? $"{baseUrl}products/create"
+                : $"{baseUrl}products/update";
+
+            var response = Id == null
+                ? await Http.PostAsJsonAsync(endpoint, ProductRequestDTO)
+                : await Http.PutAsJsonAsync(endpoint, ProductRequestDTO);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Produto salvo com sucesso!");
+                _nav.NavigateTo("/produtos");
+            }
+            else
+            {
+                var msg = await response.Content.ReadAsStringAsync();
+                _toast.ShowError($"Erro ao salvar produto: {msg}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao salvar produto: {ex.Message}");
+            _toast.ShowError("Um Erro ao salvar o produto");
+        }
+    }
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024); // 5 MB
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        var bytes = ms.ToArray();
+
+        Product.ImageUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes)}";
+    }
 }

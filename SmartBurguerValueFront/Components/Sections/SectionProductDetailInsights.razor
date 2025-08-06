@@ -1,0 +1,53 @@
+﻿<div class="section-product-insight-container w-100">
+    <div class="d-flex flex-column flex-md-row justify-content-around">
+        @if (Markup != null)
+        {
+            <div class="d-flex flex-column justify-content-center align-items-center mx-3">
+                <p class="title-insight">Markup</p>
+                <p class="name-insight">@Markup?.ToString("0.#")<span class="title-insight">%</span></p>
+            </div>
+        }
+        @if (DesirredMargin != null)
+        {
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <p class="title-insight">Margem Alvo</p>
+                <p class="name-insight">@DesirredMargin?.ToString("0.#") <span class="title-insight">%</span></p>
+            </div>
+        }
+        @if (Margin != null)
+        {
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <p class="title-insight">Margem Atual</p>
+                <p class="name-insight">@Margin?.ToString("0.#") <span class="title-insight">%</span></p>
+            </div>
+        }
+        @if (CPV != null)
+        {
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <p class="title-insight">CPV</p>
+                <p class="name-insight"><span class="title-insight">R$</span>@CPV?.ToString("0.00")</p>
+            </div>
+        }
+        @if (CMV != null)
+        {
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <p class="title-insight">CMV</p>
+                <p class="name-insight">@CMV?.ToString("0.#") <span class="title-insight">%</span></p>
+            </div>
+        }
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public decimal? Markup {get;set;}
+    [Parameter]
+    public decimal? DesirredMargin { get; set; }
+    [Parameter]
+    public decimal? Margin { get; set; }
+    [Parameter]
+    public decimal? CPV { get; set; }
+    [Parameter]
+    public decimal? CMV { get; set; }
+}
