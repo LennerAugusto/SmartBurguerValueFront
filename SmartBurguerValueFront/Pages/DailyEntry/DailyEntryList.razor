@@ -1,0 +1,146 @@
+﻿@page "/fechamento-diario"
+
+@using Blazored.Toast.Services
+@using DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.Inputs
+@using SmartBurguerValueFront.Components.buttons
+@inject HttpClient Http
+@inject DialogService DialogService
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+@inject NavigationManager _nav
+
+<div class="p-2 p-md-4">
+    <h4>Fechamentos Diários</h4>
+
+    <div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
+        <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
+        <ButtonPrimary BackgroundColor="bg-orange" Text="Novo Fechamento Diário" Url="/fechamento-diario/cad" Icon="fas fa-plus icon-inside-input" />
+    </div>
+
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="background-color: var(--orange)" />
+    }
+    else if (loadError)
+    {
+        <RadzenAlert Severity="AlertSeverity.Error">
+            Erro ao carregar os dados da API.
+        </RadzenAlert>
+    }
+    else
+    {
+        <RadzenDataGrid TItem="DailyEntryDTO" Data="@DailyEntryFilter" ColumnWidth="200px"
+                        AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
+                        Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
+            <Columns>
+                <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Total de itens vendidos">
+                    <Template Context="dailyEntry">
+                        @(dailyEntry.EntryDate.ToString("dd/MM/yyyy"))
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DailyEntryDTO" Property="Description" Title="Descrição" />
+                <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Total de itens vendidos">
+                    <Template Context="dailyEntry">
+                        @(dailyEntry.TotalItems.ToString("N0"))
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Receita">
+                    <Template Context="dailyEntry">
+                         R$ @(dailyEntry.Revenue.ToString("N2"))
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Total líquido">
+                    <Template Context="dailyEntry">
+                        R$ @(dailyEntry.Liquid.ToString("N2"))
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="EmployesDTO" Title="Status">
+                    <Template Context="dailyEntry">
+                        @(dailyEntry.IsActive ? "Ativo" : "Inativo")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Ações">
+                    <Template Context="dailyEntry">
+                        <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditDailyEntry(dailyEntry.Id)" />
+                        <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoveDailyEntry(dailyEntry.Id)" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
+@code {
+    private List<DailyEntryDTO> DailyEntryes = new();
+    public Guid? EnterpriseId { get; set; }
+    private string filterName = "";
+    private bool isLoading = true;
+    private bool loadError = false;
+    public Decimal? ValueDailySalary { get; set; } = 0;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            EnterpriseId = await _auth.GetEnterpriseId();
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = $"{baseUrl}daily-entry/get-all/by-enterprise-id?enterpriseId={EnterpriseId}";
+
+            DailyEntryes = await Http.GetFromJsonAsync<List<DailyEntryDTO>>(endpoint) ?? new();
+
+            loadError = false;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
+            loadError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private IEnumerable<DailyEntryDTO> DailyEntryFilter =>
+     DailyEntryes.Where(p =>
+     string.IsNullOrWhiteSpace(filterName) ||
+     p.EntryDate.ToString("dd/MM/yyyy").Contains(filterName, StringComparison.OrdinalIgnoreCase));
+
+    private void OnFilterChanged(string value) => filterName = value;
+
+    private void EditDailyEntry(Guid id)
+    {
+        _nav.NavigateTo($"/fechamento-diario/edit/{id}");
+    }
+
+    private async Task RemoveDailyEntry(Guid id)
+    {
+        bool? confirmed = await DialogService.Confirm("Apagar um fechamento, altera seus balancetes financeiros. Deseja realmente excluir?", "Confirmação");
+
+        if (confirmed == true)
+        {
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = $"{baseUrl}daily-entry/delete/{id}";
+
+            var response = await Http.DeleteAsync(endpoint);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Fechamento diário deletado com sucesso!");
+                DailyEntryes = DailyEntryes.Where(i => i.Id != id).ToList();
+            }
+            else
+            {
+                _toast.ShowError("Erro ao deletar fechamento diário.");
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+}
+

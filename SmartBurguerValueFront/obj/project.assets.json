@@ -707,6 +707,16 @@
           }
         }
       },
+      "Constants/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/Constants.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Constants.dll": {}
+        }
+      },
       "DTOs/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
@@ -1422,6 +1432,16 @@
           "lib/net9.0/System.IdentityModel.Tokens.Jwt.dll": {
             "related": ".xml"
           }
+        }
+      },
+      "Constants/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/Constants.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Constants.dll": {}
         }
       },
       "DTOs/1.0.0": {
@@ -2735,6 +2755,11 @@
         "system.identitymodel.tokens.jwt.nuspec"
       ]
     },
+    "Constants/1.0.0": {
+      "type": "project",
+      "path": "../Constants/Constants.csproj",
+      "msbuildProject": "../Constants/Constants.csproj"
+    },
     "DTOs/1.0.0": {
       "type": "project",
       "path": "../DTOs/DTOs.csproj",
@@ -2745,6 +2770,7 @@
     "net9.0": [
       "Blazor-ApexCharts >= 6.0.1",
       "Blazored.Toast >= 4.2.1",
+      "Constants >= 1.0.0",
       "DTOs >= 1.0.0",
       "Microsoft.AspNetCore.Components.WebAssembly >= 9.0.2",
       "Microsoft.AspNetCore.Components.WebAssembly.Authentication >= 9.0.2",
@@ -2788,6 +2814,9 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
+            "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\Constants\\Constants.csproj": {
+              "projectPath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\Constants\\Constants.csproj"
+            },
             "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\DTOs\\DTOs.csproj": {
               "projectPath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\DTOs\\DTOs.csproj"
             }

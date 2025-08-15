@@ -1,0 +1,264 @@
+﻿@page "/fechamento-diario/cad"
+@page "/fechamento-diario/edit/{Id:guid?}"
+
+@using Constants
+@using DTOs
+@using Blazored.Toast.Services
+@using Radzen
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.buttons
+@inject NavigationManager _nav
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+
+<div class="d-flex flex-column justify-content-center align-items-center">
+    <h4 class="text-dark">@((Id != null) ? "Editar Fechamento Diário" : "Novo Fechamento Diário")</h4>
+
+
+    <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
+        <div class="row mb-4">
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Data do Fechamento" Style="width: 100%">
+                    <RadzenDatePicker @bind-Value="DailyEntry.EntryDate" DateFormat="dd/MM/yyyy" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Descrição" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="DailyEntry.Description" />
+                </RadzenFormField>
+            </div>
+        </div>
+
+        <h5 class="text-center" style="color: var(--orange);">Selecione os produtos</h5>
+        <div class="row mb-3">
+            <div class="col-12 col-md-8">
+                @if (itemSelectedDTO != null)
+                {
+                    <RadzenFormField Text="Produto ou Combo" Style="width: 100%;">
+                        <RadzenDropDown @bind-Value="SelectedItemId"
+                        TValue="Guid?"
+                        Data="@itemSelectedDTO"
+                        TextProperty="Name"
+                        ValueProperty="Id"
+                        Placeholder="Selecione o produto"
+                        Style="width: 100%;" />
+                    </RadzenFormField>
+                }
+            </div>
+            <div class="col-md-3">
+                <RadzenFormField Text="Quantidade" Style="width: 100%;">
+                    <RadzenNumeric @bind-Value="SelectedQuantity" TValue="decimal" Min="1" Style="width: 100%;" />
+                </RadzenFormField>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mb-4">
+            <ButtonPrimary Text="Adicionar Produto" OnClick="@AddItem" BackgroundColor="bg-orange" Icon="fas fa-plus icon-inside-input" />
+        </div>
+        @if (DailyEntry.Items != null)
+        {
+            <RadzenDataGrid TItem="DailyEntryItemsDTO" Data="@DailyEntry.Items" ShowPagingSummary="false" AllowPaging="false" Style="margin-bottom: 20px;">
+                <Columns>
+                    <RadzenDataGridColumn TItem="DailyEntryItemsDTO" Property="Name" Title="Produto" />
+                    <RadzenDataGridColumn TItem="DailyEntryItemsDTO" Property="Quantity" Title="Quantidade"/>
+                    <RadzenDataGridColumn TItem="DailyEntryItemsDTO" Title="Remover">
+                        <Template Context="item">
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Click="@(() => RemoveItem(item))" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+        <div class="d-flex justify-content-center mb-4">
+            <ButtonPrimary Text="Salvar" OnClick="@SaveDailyEntry" BackgroundColor="bg-orange"/>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid? Id { get; set; }
+
+    public List<ComboDTO> CombosRequest { get; set; } = new();
+    public List<ProductsDTO> ProductsDTORequest { get; set; } = new();
+    public DailyEntryDTO DailyEntry { get; set; } = new();
+    public Guid? EnterpriseId { get; set; }
+    public List<ItemSelectedDTO> itemSelectedDTO { get; set; } = new List<ItemSelectedDTO>();
+    public decimal SelectedQuantity { get; set; } = 1;
+    public Guid? SelectedItemId { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            EnterpriseId = await _auth.GetEnterpriseId();
+
+            var baseUrl = Configuration["UrlApi"];
+            var endpointProducts = $"{baseUrl}products/get-all/by-enterprise-id?EnterpriseId={EnterpriseId}";
+            var endpointCombos = $"{baseUrl}combo/get-all/by-enterprise-id?EnterpriseId={EnterpriseId}";
+            ProductsDTORequest = await Http.GetFromJsonAsync<List<ProductsDTO>>(endpointProducts);
+            CombosRequest = await Http.GetFromJsonAsync<List<ComboDTO>>(endpointCombos);
+
+            if (ProductsDTORequest == null || CombosRequest == null)
+            {
+                _toast.ShowError("Erro ao carregar produtos ou combos.");
+                return;
+            }
+            var lista = CombosRequest.Select(c => new ItemSelectedDTO
+                {
+                    Type = "Combo",
+                    Id = c.Id,
+                    Name = c.Name
+                })
+            .Concat(ProductsDTORequest.Select(p => new ItemSelectedDTO
+            {
+                 Type = "Produto",
+                 Id = p.Id,
+                 Name = p.Name
+            })).ToList();
+
+            itemSelectedDTO = lista.OrderBy(x => x.Name).ToList();
+            if (Id != null)
+            {
+                var endpoint = $"{baseUrl}daily-entry/get-by-id?DailyEntryId={Id}";
+                var result = await Http.GetFromJsonAsync<DailyEntryDTO>(endpoint);
+                if (result != null)
+                    DailyEntry = result;
+            }
+            else
+            {
+                DailyEntry = new DailyEntryDTO
+                    {
+                        Id = Guid.NewGuid(),
+                        EntryDate = DateTime.Now,
+                        EnterpriseId = EnterpriseId ?? Guid.Empty,
+                        Items = new List<DailyEntryItemsDTO>()
+                    };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao carregar dados: {ex.Message}");
+            _toast.ShowError("Erro ao carregar dados.");
+        }
+    }
+
+    private void AddItem()
+    {
+        if (SelectedItemId == null)
+        {
+            _toast.ShowError("Selecione um item.");
+            return;
+        }
+
+        if (SelectedQuantity <= 0)
+        {
+            _toast.ShowError("Informe uma quantidade válida.");
+            return;
+        }
+
+        if (DailyEntry.Items.Any(x => x.ProductId == SelectedItemId || x.ComboId == SelectedItemId))
+        {
+            _toast.ShowError("Este item já foi adicionado.");
+            return;
+        }
+
+        var newItems = new List<DailyEntryItemsDTO>(DailyEntry.Items ?? new List<DailyEntryItemsDTO>());
+
+        var produto = ProductsDTORequest.FirstOrDefault(p => p.Id == SelectedItemId);
+        var combo = CombosRequest.FirstOrDefault(c => c.Id == SelectedItemId);
+
+        if (produto != null)
+        {
+            newItems.Add(new DailyEntryItemsDTO
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = produto.Id,
+                    Name = produto.Name,
+                    Quantity = SelectedQuantity,
+                });
+        }
+        else if (combo != null)
+        {
+            newItems.Add(new DailyEntryItemsDTO
+                {
+                    Id = Guid.NewGuid(),
+                    ComboId = combo.Id,
+                    Name = combo.Name,
+                    Quantity = SelectedQuantity,
+                });
+        }
+
+        DailyEntry.Items = newItems;
+
+        SelectedItemId = null;
+        SelectedQuantity = 1;
+
+        StateHasChanged(); 
+    }
+
+
+    private void RemoveItem(DailyEntryItemsDTO item)
+    {
+        DailyEntry.Items.Remove(item);
+    }
+    private async Task SaveDailyEntry()
+    {
+        if (DailyEntry == null || DailyEntry.Items == null || !DailyEntry.Items.Any())
+        {
+            _toast.ShowError("Preencha corretamente os dados do item.");
+            return;
+        }
+
+        try
+        {
+            var Entry = new DailyEntryDTO
+                {
+                    Id = DailyEntry.Id,
+                    DateCreated = DateTime.UtcNow,
+                    DateUpdated = DateTime.UtcNow,
+                    IsActive = true,
+                    EntryDate = DailyEntry.EntryDate,
+                    Description = DailyEntry.Description ?? string.Empty,
+                    EnterpriseId = EnterpriseId ?? Guid.Empty,
+                    Items = DailyEntry.Items.Select(i => new DailyEntryItemsDTO
+                    {
+                        Id = i.Id,
+                        DateCreated = DateTime.UtcNow,
+                        DateUpdated = DateTime.UtcNow,
+                        IsActive = true,
+                        DailyEntryId = DailyEntry.Id,
+                        ProductId = i.ProductId,
+                        ComboId = i.ComboId,
+                        Name = i.Name,
+                        Quantity = i.Quantity,
+                    }).ToList()
+                };
+
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = Id == null
+               ? $"{baseUrl}daily-entry/create"
+               : $"{baseUrl}daily-entry/update";
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(Entry));
+
+            var response = Id == null
+                ? await Http.PostAsJsonAsync(endpoint, Entry)
+                : await Http.PutAsJsonAsync(endpoint,  Entry);
+         
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Fechamento salvo com sucesso!");
+                _nav.NavigateTo("/fechamento-diario");
+            }
+            else
+            {
+                var msg = await response.Content.ReadAsStringAsync();
+                _toast.ShowError($"Erro ao salvar fechamento: {msg}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _toast.ShowError("Erro ao salvar fechamento.");
+        }
+    }
+}
+

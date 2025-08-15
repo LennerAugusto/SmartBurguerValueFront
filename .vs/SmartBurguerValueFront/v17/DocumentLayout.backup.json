@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5C1F487A-4F53-4F9E-B3DA-7D80531629FF}|Constants\\Constants.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\constants\\eperiod.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5C1F487A-4F53-4F9E-B3DA-7D80531629FF}|Constants\\Constants.csproj|solutionrelative:constants\\eperiod.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
@@ -75,14 +79,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "EPeriod.cs",
+              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\Constants\\EPeriod.cs",
+              "RelativeDocumentMoniker": "Constants\\EPeriod.cs",
+              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\Constants\\EPeriod.cs",
+              "RelativeToolTip": "Constants\\EPeriod.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBAAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-15T01:41:51.772Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Home.razor",
               "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Home.razor",
               "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\Home.razor",
               "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Home.razor",
               "RelativeToolTip": "SmartBurguerValueFront\\Pages\\Home.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAABoAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-06T01:58:45.627Z",
+              "WhenOpened": "2025-08-15T01:21:00.306Z",
               "EditorCaption": ""
             }
           ]

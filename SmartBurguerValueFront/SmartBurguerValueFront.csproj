@@ -26,6 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Constants\Constants.csproj" />
 		<ProjectReference Include="..\DTOs\DTOs.csproj" />
 	</ItemGroup>
 
