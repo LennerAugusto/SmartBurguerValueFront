@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5C1F487A-4F53-4F9E-B3DA-7D80531629FF}|Constants\\Constants.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\constants\\eperiod.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5C1F487A-4F53-4F9E-B3DA-7D80531629FF}|Constants\\Constants.csproj|solutionrelative:constants\\eperiod.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B4462263-BD0C-449E-AFD6-80EA7D219812}|DTOs\\DTOs.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\dtos\\analysis\\analysishomedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B4462263-BD0C-449E-AFD6-80EA7D219812}|DTOs\\DTOs.csproj|solutionrelative:dtos\\analysis\\analysishomedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B4462263-BD0C-449E-AFD6-80EA7D219812}|DTOs\\DTOs.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\dtos\\analysis\\requestanalysisdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B4462263-BD0C-449E-AFD6-80EA7D219812}|DTOs\\DTOs.csproj|solutionrelative:dtos\\analysis\\requestanalysisdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\dailyentry\\dailyentrylist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\pages\\dailyentry\\dailyentrylist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 14,
+          "SelectedChildIndex": 17,
           "Children": [
             {
               "$type": "Bookmark",
@@ -78,28 +86,52 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "EPeriod.cs",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\Constants\\EPeriod.cs",
-              "RelativeDocumentMoniker": "Constants\\EPeriod.cs",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\Constants\\EPeriod.cs",
-              "RelativeToolTip": "Constants\\EPeriod.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBAAAAAFAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "AnalysisHomeDTO.cs",
+              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\DTOs\\Analysis\\AnalysisHomeDTO.cs",
+              "RelativeDocumentMoniker": "DTOs\\Analysis\\AnalysisHomeDTO.cs",
+              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\DTOs\\Analysis\\AnalysisHomeDTO.cs",
+              "RelativeToolTip": "DTOs\\Analysis\\AnalysisHomeDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-15T01:41:51.772Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-19T01:52:38.36Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
+              "Title": "DailyEntryList.razor",
+              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryList.razor",
+              "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryList.razor",
+              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryList.razor",
+              "RelativeToolTip": "SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryList.razor",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAAFAAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-08-19T01:05:23.827Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RequestAnalysisDTO.cs",
+              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\DTOs\\Analysis\\RequestAnalysisDTO.cs",
+              "RelativeDocumentMoniker": "DTOs\\Analysis\\RequestAnalysisDTO.cs",
+              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\DTOs\\Analysis\\RequestAnalysisDTO.cs",
+              "RelativeToolTip": "DTOs\\Analysis\\RequestAnalysisDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-19T01:02:38.419Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "Home.razor",
               "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Home.razor",
               "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\Home.razor",
               "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Home.razor",
               "RelativeToolTip": "SmartBurguerValueFront\\Pages\\Home.razor",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAAABoAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAQwHoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-15T01:21:00.306Z"
+              "WhenOpened": "2025-08-19T00:11:53.531Z",
+              "EditorCaption": ""
             }
           ]
         },

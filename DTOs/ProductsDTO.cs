@@ -19,6 +19,7 @@ namespace DTOs
         public decimal? CMV { get; set; }
         public string ImageUrl { get; set; }
         public Guid EnterpriseId { get; set; }
+        public int Quantity { get; set; }
         public List<IngredientsDTO> Ingredients { get; set; }
     }
 
