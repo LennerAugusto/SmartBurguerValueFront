@@ -29,6 +29,11 @@
                     <RadzenTextBox @bind-Value="DailyEntry.Description" />
                 </RadzenFormField>
             </div>
+            <div class="col-12 col-md-3">
+                <RadzenFormField Text="Total de  pedidos" Style="width: 100%">
+                    <RadzenNumeric @bind-Value="DailyEntry.TotalOrders"/>
+                </RadzenFormField>
+            </div>
         </div>
 
         <h5 class="text-center" style="color: var(--orange);">Selecione os produtos</h5>
@@ -86,6 +91,7 @@
     public List<ItemSelectedDTO> itemSelectedDTO { get; set; } = new List<ItemSelectedDTO>();
     public decimal SelectedQuantity { get; set; } = 1;
     public Guid? SelectedItemId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -211,29 +217,43 @@
 
         try
         {
-            var Entry = new DailyEntryDTO
-                {
-                    Id = DailyEntry.Id,
-                    DateCreated = DateTime.UtcNow,
-                    DateUpdated = DateTime.UtcNow,
-                    IsActive = true,
-                    EntryDate = DailyEntry.EntryDate,
-                    Description = DailyEntry.Description ?? string.Empty,
-                    EnterpriseId = EnterpriseId ?? Guid.Empty,
-                    Items = DailyEntry.Items.Select(i => new DailyEntryItemsDTO
-                    {
-                        Id = i.Id,
-                        DateCreated = DateTime.UtcNow,
-                        DateUpdated = DateTime.UtcNow,
-                        IsActive = true,
-                        DailyEntryId = DailyEntry.Id,
-                        ProductId = i.ProductId,
-                        ComboId = i.ComboId,
-                        Name = i.Name,
-                        Quantity = i.Quantity,
-                    }).ToList()
-                };
 
+            var totalCost = DailyEntry.Items.Sum(i => i.TotalCPV);
+            var revenue = DailyEntry.Items.Sum(i => i.TotalRevenue);
+            var liquid = revenue - totalCost;
+            var entryId = DailyEntry.Id != Guid.Empty ? DailyEntry.Id : Guid.NewGuid();
+
+            var Entry = new DailyEntryDTO
+            {
+                Id = entryId,
+                DateCreated = Id == null ? DateTime.UtcNow : DailyEntry.DateCreated,
+                DateUpdated = DateTime.UtcNow,
+                IsActive = true,
+                EntryDate = DailyEntry.EntryDate,
+                TotalCost = DailyEntry.Items.Sum(i => i.TotalCPV ?? 0),
+                Revenue = DailyEntry.Items.Sum(i => i.TotalRevenue ?? 0),
+                Liquid = DailyEntry.Items.Sum(i => (i.TotalRevenue ?? 0) - (i.TotalCPV ?? 0)),
+                Description = DailyEntry.Description ?? string.Empty,
+                TotalItems = DailyEntry.Items.Sum(i => i.Quantity),
+                TotalOrders = DailyEntry.TotalOrders ?? 0,
+                EnterpriseId = EnterpriseId ?? Guid.Empty,
+                Items = DailyEntry.Items.Select(i => new DailyEntryItemsDTO
+                {
+                    Id = i.Id != Guid.Empty ? i.Id : Guid.NewGuid(),
+                    DailyEntryId = entryId,
+                    Name = i.Name,
+                    Quantity = i.Quantity,
+                    ProductId = i.ProductId,
+                    ComboId = i.ComboId,
+                    TotalRevenue = i.TotalRevenue ?? 0,
+                    TotalCPV = i.TotalCPV ?? 0,
+                    DateCreated = i.DateCreated != DateTime.MinValue ? i.DateCreated : DateTime.UtcNow,
+                    DateUpdated = DateTime.UtcNow,
+                    IsActive = true
+                }).ToList()
+            };
+
+            
             var baseUrl = Configuration["UrlApi"];
             var endpoint = Id == null
                ? $"{baseUrl}daily-entry/create"

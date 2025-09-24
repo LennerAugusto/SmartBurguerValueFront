@@ -1,0 +1,127 @@
+﻿@page "/custos-fixos"
+@using Blazored.Toast.Services
+@using DTOs
+@using Radzen
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.Inputs
+@using SmartBurguerValueFront.Components.buttons
+@inject NavigationManager _nav
+@inject HttpClient Http
+@inject CustomAuthStateProvider _auth
+@inject IConfiguration Configuration
+@inject IToastService _toast
+
+<div class="p-2 p-md-4">
+    <h4>Custos Fixos</h4>
+
+    <div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
+        <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
+        <ButtonPrimary BackgroundColor="bg-orange" Text="Novo custo fixo" Url="/custos-fixos/cad" Icon="fas fa-plus icon-inside-input" />
+    </div>
+
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="background-color: var(--orange)" />
+    }
+    else if (loadError)
+    {
+        <RadzenAlert Severity="AlertSeverity.Error">
+            Erro ao carregar os dados da API.
+        </RadzenAlert>
+    }
+    else
+    {
+        <RadzenDataGrid TItem="FixedCostsDTO" Data="@CostsFilter" ColumnWidth="200px"
+                        AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
+                        Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
+            <Columns>
+                <RadzenDataGridColumn TItem="FixedCostsDTO" Property="Name" Title="Nome" />
+                <RadzenDataGridColumn TItem="FixedCostsDTO" Title="Valor">
+                    <Template Context="cost">
+                        R$ @(cost.Value)
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="FixedCostsDTO" Title="Conta Paga">
+                    <Template Context="cost">
+                        @(cost.IsPaid == true ? "Sim" : cost.IsPaid == false ? "Não" : "—")
+                    </Template>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="FixedCostsDTO" Title="Data de vencimento">
+                    <Template Context="cost">
+                        @(cost.DueDate.ToString("dd/MM/yyyy"))
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="IngredientsDTO" Title="Status">
+                    <Template Context="ingredient">
+                        @(ingredient.IsActive ? "Ativo" : "Inativo")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="FixedCostsDTO" Title="Ações">
+                    <Template Context="cost">
+                        <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditFixedCost(cost.Id)" />
+                        <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoveFixedCost(cost.Id)" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
+@code {
+    private List<FixedCostsDTO> Costs = new();
+    public Guid? EnterpriseId { get; set; }
+    private string filterName = "";
+    private bool isLoading = true;
+    private bool loadError = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            EnterpriseId = await _auth.GetEnterpriseId();
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = $"{baseUrl}fixed-coast/get-all/by-enterprise-id?EnterpriseId={EnterpriseId}";
+
+            Costs = await Http.GetFromJsonAsync<List<FixedCostsDTO>>(endpoint) ?? new();
+
+            loadError = false;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
+            loadError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private IEnumerable<FixedCostsDTO> CostsFilter =>
+        Costs.Where(p => string.IsNullOrWhiteSpace(filterName) || p.Name.Contains(filterName, StringComparison.OrdinalIgnoreCase));
+
+    private void OnFilterChanged(string value) => filterName = value;
+
+    private void EditFixedCost(Guid? id)
+    {
+        _nav.NavigateTo($"/custos-fixos/edit/{id}");
+    }
+
+    private async Task RemoveFixedCost(Guid? id)
+    {
+        var baseUrl = Configuration["UrlApi"];
+        var endpoint = $"{baseUrl}fixed-coast/delete/{id}";
+
+        var response = await Http.DeleteAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _toast.ShowSuccess("Conta deletada com sucesso!");
+            Costs = Costs.Where(i => i.Id != id).ToList();
+        }
+        else
+        {
+            _toast.ShowError("Erro ao deletar Conta.");
+        }
+    }
+}

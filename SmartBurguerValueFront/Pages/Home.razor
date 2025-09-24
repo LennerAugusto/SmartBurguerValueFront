@@ -26,7 +26,7 @@
                     </select>
                 </div>
             </div>
-            @if(analysisHomeDTO != null)
+            @if (analysisHomeDTO != null)
             {
                 <div class="col-12 col-md-4 mb-3">
                     <SumaryCardHome UrlIcon="img/icons/receipt.webp" TitleCard="Total de Pedidos" Number="@analysisHomeDTO.TotalOrders" />
@@ -42,20 +42,20 @@
                 <ApexChart TItem="Order" Title="Basic Sample">
 
                     <ApexPointSeries TItem="Order"
-                    Items="orders"
-                    SeriesType="@SeriesType.Area"
-                    Name="Gross Value"
-                    XValue="@(e => e.Country)"
-                    YAggregate="@(e => e.Sum(e => e.GrossValue))"
-                    OrderByDescending="e => e.Y" />
+                                     Items="orders"
+                                     SeriesType="@SeriesType.Area"
+                                     Name="Gross Value"
+                                     XValue="@(e => e.Country)"
+                                     YAggregate="@(e => e.Sum(e => e.GrossValue))"
+                                     OrderByDescending="e => e.Y" />
 
                     <ApexPointSeries TItem="Order"
-                    Items="orders"
-                    SeriesType="@SeriesType.Area"
-                    Name="Net Value"
-                    XValue="@(e => e.Country)"
-                    YAggregate="@(e => e.Sum(e => e.NetValue))"
-                    OrderByDescending="e => e.Y" />
+                                     Items="orders"
+                                     SeriesType="@SeriesType.Area"
+                                     Name="Net Value"
+                                     XValue="@(e => e.Country)"
+                                     YAggregate="@(e => e.Sum(e => e.NetValue))"
+                                     OrderByDescending="e => e.Y" />
                 </ApexChart>
             </div>
         </div>
@@ -72,14 +72,16 @@
             @if (BestSellingProducts != null)
             {
                 <h4 class="text-dark d-block d-flex flex-row justify-content-center my-3">Mais Vendidos:</h4>
-                @foreach (var item in BestSellingProducts.Take(6))
-                {
-                    <div class="my-4">
-                        <CardProduct ItemHome="item" />
-                    </div>
-                }
+                <div class="d-flex flex-column justify-content-center align-items-center ">
+                    @foreach (var item in BestSellingProducts.Take(6))
+                    {
+                        <div class="my-4 col-12 col-lg-6">
+                            <CardProduct ItemHome="item" />
+                        </div>
+                    }
+                </div>
             }
-          
+
         </div>
     </div>
 </div>
@@ -91,7 +93,7 @@
     private bool isLoading = true;
     private bool loadError = false;
     private string? userName;
-    public Guid? EnterpriseId { get; set; } 
+    public Guid? EnterpriseId { get; set; }
     public List<BestSellingProductsDTO> BestSellingProducts { get; set; } = new();
     public AnalysisHomeDTO analysisHomeDTO { get; set; } = new AnalysisHomeDTO();
     private EPeriod SelectedPeriod { get; set; } = EPeriod.SinceTheBeginning;
@@ -128,10 +130,10 @@
             EnterpriseId = await AuthenticationStateProvider.GetEnterpriseId();
 
             var analysisDto = new RequestAnalysisDTO
-                {
-                    EnterpriseId = EnterpriseId,
-                    Period = SelectedPeriod
-                };
+            {
+                EnterpriseId = EnterpriseId,
+                Period = SelectedPeriod
+            };
 
             var baseUrl = Configuration["UrlApi"];
             var endpoint = $"{baseUrl}analysis/best-selling-products/by-enterprise-id";

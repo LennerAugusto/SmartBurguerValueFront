@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOs", "DTOs\DTOs.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Constants", "Constants\Constants.csproj", "{5C1F487A-4F53-4F9E-B3DA-7D80531629FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartBurguerValueAdmin", "SmartBurguerValueAdmin\SmartBurguerValueAdmin.csproj", "{288F1464-B45B-4FFA-887E-6DCEA6C561BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartBurguerValueRCL", "SmartBurguerValueAPI\SmartBurguerValueRCL.csproj", "{342C648F-6F58-4E39-A411-44D014FDB1C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{5C1F487A-4F53-4F9E-B3DA-7D80531629FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C1F487A-4F53-4F9E-B3DA-7D80531629FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C1F487A-4F53-4F9E-B3DA-7D80531629FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{288F1464-B45B-4FFA-887E-6DCEA6C561BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{288F1464-B45B-4FFA-887E-6DCEA6C561BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{288F1464-B45B-4FFA-887E-6DCEA6C561BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{288F1464-B45B-4FFA-887E-6DCEA6C561BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{342C648F-6F58-4E39-A411-44D014FDB1C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{342C648F-6F58-4E39-A411-44D014FDB1C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{342C648F-6F58-4E39-A411-44D014FDB1C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{342C648F-6F58-4E39-A411-44D014FDB1C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

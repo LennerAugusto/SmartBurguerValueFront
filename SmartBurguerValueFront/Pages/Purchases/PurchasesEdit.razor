@@ -1,5 +1,4 @@
-﻿
-@page "/compras/cad"
+﻿@page "/compras/cad"
 @page "/compras/edit/{Id:guid?}"
 
 @using Blazored.Toast.Services
@@ -68,9 +67,9 @@
             <ButtonPrimary Text="Adicionar Item" BackgroundColor="bg-orange" OnClick="@AddItem" />
         </div>
 
-        @if (Purchase?.PurchaseItems?.Any() == true)
+        @if (Purchase?.Items?.Any() == true)
         {
-            <RadzenDataGrid @ref="dataGrid" TItem="PurchaseItemsDTO" Data="@Purchase.PurchaseItems" ShowPagingSummary="false" AllowPaging="false" Style="margin-bottom: 20px;">
+            <RadzenDataGrid @ref="dataGrid" TItem="PurchaseItemsDTO" Data="@Purchase.Items" ShowPagingSummary="false" AllowPaging="false" Style="margin-bottom: 20px;">
                 <Columns>
                     <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="NameItem" Title="Item" />
                     <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="Quantity" Title="Qtd" />
@@ -90,7 +89,7 @@
     </div>
 </div>
 @code {
-    [Parameter] public Guid? Id { get; set; }
+    [Parameter] public Guid Id { get; set; }
 
     public PurchasesDTO Purchase { get; set; } = new();
     public PurchaseItemsDTO NewItem { get; set; } = new();
@@ -110,7 +109,7 @@
             var ingredientsEndpoint = $"{baseUrl}ingredient/get-all/by-enterprise-id?enterpriseId={EnterpriseId}";
             Ingredients = await Http.GetFromJsonAsync<List<IngredientsDTO>>(ingredientsEndpoint) ?? new List<IngredientsDTO>();
 
-            if (Id != null)
+            if (Id != Guid.Empty)
             {
                 var endpoint = $"{baseUrl}purchase/get-by-id?PurchaseId={Id}";
                 var result = await Http.GetFromJsonAsync<PurchasesDTO>(endpoint);
@@ -124,7 +123,7 @@
                         Id = Guid.NewGuid(),
                         PurchaseDate = DateTime.Now,
                         IsActive = true,
-                        PurchaseItems = new List<PurchaseItemsDTO>()
+                        Items = new List<PurchaseItemsDTO>()
                     };
             }
         }
@@ -144,19 +143,19 @@
             _toast.ShowError("Selecione um ingrediente e preencha corretamente todos os campos.");
             return;
         }
-
+        Console.WriteLine(selectedIngredient.UnitOfMeasureId);
         var itemToAdd = new PurchaseItemsDTO
             {
                 NameItem = selectedIngredient.Name,
                 PurchaseId = Purchase.Id,
-                UnityOfMeasureId = selectedIngredient.UnitOfMeasureId,
+                UnityOfMensureId = selectedIngredient.UnitOfMeasureId,
                 Quantity = NewItem.Quantity,
-                UnitPrice = NewItem.UnitPrice,
+                UnitPrice = NewItem.UnitPrice, 
                 IngredientId = selectedIngredient.Id,
                 InventoryItemId = selectedIngredient.InventoryItemId
             };
 
-        Purchase.PurchaseItems.Add(itemToAdd);
+        Purchase.Items.Add(itemToAdd);
 
         NewItem = new PurchaseItemsDTO();
         SelectedIngredientId = Guid.Empty;
@@ -167,7 +166,7 @@
 
     private void RemoveItem(PurchaseItemsDTO item)
     {
-        Purchase.PurchaseItems.Remove(item);
+        Purchase.Items.Remove(item);
     }
 
     private async Task SavePurchase()
@@ -178,7 +177,7 @@
             return;
         }
 
-        if (!Purchase.PurchaseItems.Any())
+        if (!Purchase.Items.Any())
         {
             _toast.ShowError("Adicione pelo menos um item à compra.");
             return;
@@ -187,17 +186,18 @@
         try
         {
             var baseUrl = Configuration["UrlApi"];
+            Purchase.Id = Id;
             Purchase.EnterpriseId = EnterpriseId;
-            Purchase.TotalAmount = Purchase.PurchaseItems.Sum(x => x.Quantity * x.UnitPrice);
+            Purchase.TotalAmount = Purchase.Items.Sum(x => x.Quantity * x.UnitPrice);
             Purchase.DateUpdated = DateTime.UtcNow;
-
+            Purchase.IsActive = Purchase.IsActive;
             HttpResponseMessage response;
 
-            if (Id == null)
+            if (Id == Guid.Empty)
             {
                 Purchase.Id = Guid.NewGuid();
                 Purchase.DateCreated = DateTime.UtcNow;
-
+                Purchase.IsActive = Purchase.IsActive;
                 var endpoint = $"{baseUrl}purchase/create";
                 response = await Http.PostAsJsonAsync(endpoint, Purchase);
             }

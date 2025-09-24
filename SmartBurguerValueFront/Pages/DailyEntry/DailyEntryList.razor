@@ -46,19 +46,20 @@
                 <RadzenDataGridColumn TItem="DailyEntryDTO" Property="Description" Title="Descrição" />
                 <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Total de itens vendidos">
                     <Template Context="dailyEntry">
-                        @(dailyEntry.TotalItems.ToString("N0"))
+                        @(dailyEntry.TotalItems?.ToString("N2") ?? "0")
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Receita">
                     <Template Context="dailyEntry">
-                         R$ @(dailyEntry.Revenue.ToString("N2"))
+                        R$ @(dailyEntry.Revenue.ToString("N2") ?? "0")
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Total líquido">
                     <Template Context="dailyEntry">
-                        R$ @(dailyEntry.Liquid.ToString("N2"))
+                        R$ @(dailyEntry.Liquid.ToString("N2") ?? "0")
                     </Template>
                 </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DailyEntryDTO" Property="TotalOrders" Title="Total de pedidos" />
                 <RadzenDataGridColumn TItem="EmployesDTO" Title="Status">
                     <Template Context="dailyEntry">
                         @(dailyEntry.IsActive ? "Ativo" : "Inativo")

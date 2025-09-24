@@ -12,10 +12,10 @@
         <p><strong>Valor Total:</strong> R$ @Purchase.TotalAmount.ToString("N2")</p>
 
         <h5 style="color: var(--orange);">Produtos</h5>
-        <RadzenDataGrid TItem="PurchaseItemsDTO" Data="@Purchase.PurchaseItems" ShowPagingSummary="false"
+        <RadzenDataGrid TItem="PurchaseItemsDTO" Data="@Purchase.Items" ShowPagingSummary="false"
                         AllowPaging="false" Style="margin-top: 15px;">
             <Columns>
-                <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="NameItem" Title="Item" />
+                <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="Name" Title="Item" />
                 <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="Quantity" Title="Quantidade" />
                 <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="UnitPrice" Title="Preço Unitário" />
             </Columns>

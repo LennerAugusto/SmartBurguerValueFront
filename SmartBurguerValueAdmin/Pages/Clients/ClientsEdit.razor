@@ -1,0 +1,194 @@
+﻿@page "/clientes/cad"
+@page "/clientes/edit/{Id:guid?}"
+
+@using Blazored.Toast.Services
+@using DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen
+@using Radzen.Blazor
+@using System.Security.Claims
+@inject NavigationManager _nav
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+<div class="d-flex flex-column justify-content-center align-items-center">
+    @if (Id != null)
+    {
+        <h4 class="text-dark">Editar cliente</h4>
+    }
+    else
+    {
+        <h4 class="text-dark">Criar novo cliente</h4>
+    }
+    <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Nome" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Enterprise.Name" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="CPF/CNPJ" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Enterprise.CpfCnpj" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Número de telefone" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Enterprise.PhoneNumber" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Estado (UF)" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Enterprise.State" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Cidade" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Enterprise.City" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Rua" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Enterprise.street" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Número" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Enterprise.Number" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="CEP" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Enterprise.Cep" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Plano" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Enterprise.Plan" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Nome de usuário no sistema" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@User.UserName" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="E-mail" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@User.Email" />
+                </RadzenFormField>
+            </div>
+            @if (!IsUpdate)
+            {
+                <div class="col-12 col-md-6">
+                    <RadzenFormField Text="Senha de acesso" Style="width: 100%">
+                        <RadzenTextBox @bind-Value="@User.Password" />
+                    </RadzenFormField>
+                </div>
+            }
+          
+            <div class="col-12 py-3">
+                <label style="display: flex; justify-content:center; align-items: center;">
+                    <RadzenCheckBox @bind-Value="Enterprise.IsActive" />
+                    <span style="margin-left: 8px;">Empresa Ativa?</span>
+                </label>
+            </div>
+        </div>
+        <div class="d-flex flex-row justify-content-center w-100">
+            <RadzenButton Text="Salvar"
+                           Click="@SaveEnterprise" />
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    public EnterpriseDTO Enterprise { get; set; } = new();
+    public List<RegisterDTO> Users { get; set; } = new();
+    public RegisterDTO User { get; set; } = new();
+    public AddUserRoleDTO UserRole { get; set; } = new();
+    public bool IsUpdate { get; set; } = false;
+    protected override async Task OnInitializedAsync()
+    {
+        if(Id == null)
+        {
+            Enterprise = new EnterpriseDTO();
+            Users = new List< RegisterDTO>();
+        }
+        else
+        {
+            var baseUrl = Configuration["UrlApi"];
+            try
+            {
+                var endpoint = $"{baseUrl}enterprise/get-by-id?EnterpriseId={Id}";
+                var endpointUser = $"{baseUrl}Auth/users/by-enterprise-id?enterpriseId={Id}";
+                Enterprise = await Http.GetFromJsonAsync<EnterpriseDTO>(endpoint) ?? new();
+                Users = await Http.GetFromJsonAsync<List<RegisterDTO>>(endpointUser) ?? new();
+                User = Users.FirstOrDefault() ?? new RegisterDTO();
+                if(Enterprise != null)
+                    IsUpdate = true;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Erro ao buscar empresa: {ex.Message + Id}");
+            }
+        }
+
+    }
+
+    public async Task SaveEnterprise()
+    {
+        Enterprise.DateUpdated = DateTime.UtcNow;
+        if (IsUpdate)
+        {
+            var endpoint = $"{Configuration["UrlApi"]}enterprise/update";
+            var response = await Http.PutAsJsonAsync(endpoint, Enterprise);
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Empresa atualizada com sucesso!");
+                _nav.NavigateTo("/clientes");
+            }
+            else
+            {
+                _toast.ShowError("Eror ao atualizar empresa!");
+            }
+        }
+        else
+        {
+            var endpoint = $"{Configuration["UrlApi"]}enterprise/create";
+            var response = await Http.PostAsJsonAsync(endpoint, Enterprise);
+            if (response.IsSuccessStatusCode)
+            {
+                if (User == null)
+                {
+                    User.EnterpriseId = Enterprise.Id;
+                    var endpointRegister = $"{Configuration["UrlApi"]}Auth/register";
+                    var responseRegister = await Http.PostAsJsonAsync(endpoint, User);
+
+                    if (responseRegister.IsSuccessStatusCode)
+                    {
+                        UserRole.Email = User.Email;
+                        UserRole.RoleName = "Enterprise";
+                        var endpointAddUserToRole = $"{Configuration["UrlApi"]}Auth/AddUserToRole";
+                        var responseAddUserToRole = await Http.PostAsJsonAsync(endpoint, UserRole);
+                        if (responseAddUserToRole.IsSuccessStatusCode)
+                        {
+                            _toast.ShowSuccess("Usuario criado com sucesso!");
+                        }
+                    }
+                }
+                _toast.ShowSuccess("Empresa salva com sucesso");
+                _nav.NavigateTo("/clientes");
+            }
+            else
+            {
+                _toast.ShowError("Erro ao salvar empresa.");
+            }
+        }
+       
+
+    }
+}

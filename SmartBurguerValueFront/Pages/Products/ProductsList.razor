@@ -111,7 +111,7 @@
 
     private async Task RemoveProduct(Guid id)
     {
-        bool? confirmed = await DialogService.Confirm("Apagar um produto, altera seus balancetes financeiros e suas possibilidades de venda. Deseja realmente excluir?", "Confirmação");
+        bool? confirmed = await DialogService.Confirm("Apagar um produto, altera seus balancetes financeiros e suas possibilidades de venda, caso não for mais utiliza-lo, recomendamos que desative-o. Deseja realmente excluir?", "Confirmação");
 
         if (confirmed == true)
         {

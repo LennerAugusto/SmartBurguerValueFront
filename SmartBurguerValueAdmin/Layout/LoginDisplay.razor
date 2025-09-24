@@ -1,0 +1,13 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using SmartBurguerValueFront.Services
+@inject AuthService Auth
+
+<AuthorizeView>
+    <Authorized>
+        <span class="text-black mr-2">Olá, @context.User.Identity.Name</span>
+    </Authorized>
+    <NotAuthorized>
+        <a href="/login" class="btn btn-outline-light btn-sm">Entrar</a>
+    </NotAuthorized>
+</AuthorizeView>
+

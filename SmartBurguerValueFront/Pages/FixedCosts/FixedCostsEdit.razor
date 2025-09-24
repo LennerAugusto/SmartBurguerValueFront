@@ -1,0 +1,130 @@
+﻿@page "/custos-fixos/cad"
+@page "/custos-fixos/edit/{Id:guid?}"
+@using Blazored.Toast.Services
+@using DTOs
+@using Radzen.Blazor
+@using SmartBurguerValueFront.Components.buttons
+@inject NavigationManager _nav
+@inject HttpClient ApiHttp
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+
+<div class="d-flex flex-column justify-content-center align-items-center">
+    @if (Id != null)
+    {
+        <h4 class="text-dark">Editar Conta</h4>
+    }
+    else
+    {
+        <h4 class="text-dark">Criar nova conta</h4>
+    }
+    <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Nome" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Cost.Name" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Descrição" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Cost.Description" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Valor" Style="width: 100%">
+                    <RadzenNumeric @bind-Value="@Cost.Value" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Data de pagamento" Style="width: 100%">
+                    <RadzenDatePicker @bind-Value="@Cost.PaymentDate" DateFormat="dd/MM/yyyy" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Data de vencimento" Style="width: 100%">
+                    <RadzenDatePicker @bind-Value="@Cost.DueDate" DateFormat="dd/MM/yyyy" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6 py-3">
+                <label style="display: flex; justify-content:center; align-items: center;">
+                    <RadzenCheckBox @bind-Value="Cost.IsPaid" />
+                    <span style="margin-left: 8px;">Conta paga ?</span>
+                </label>
+            </div>
+        </div>
+        <div class="d-flex flex-row justify-content-center w-100">
+            <ButtonPrimary Text="Salvar"
+                           BackgroundColor="bg-orange"
+                           OnClick="@SaveCost" />
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+
+    public FixedCostsDTO Cost { get; set; } = new();
+    public Guid? EnterpriseId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        EnterpriseId = await _auth.GetEnterpriseId();
+        var baseUrl = Configuration["UrlApi"];
+        if (Id == null)
+        {
+            Cost = new FixedCostsDTO();
+        }
+        else
+        {
+            try
+            {
+                var endpoint = $"{baseUrl}fixed-coast/get-by-id?FixedCoastId={Id}";
+                Cost = await ApiHttp.GetFromJsonAsync<FixedCostsDTO>(endpoint) ?? new();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Erro ao buscar conta: {ex.Message + Id}");
+            }
+        }
+    }
+
+    public async Task SaveCost()
+    {
+        if (Id == null)
+        {
+            Cost.Id = Guid.NewGuid();
+            Cost.EnterpriseId = EnterpriseId;
+            Cost.DateCreated = DateTime.Now;
+            Cost.DateUpdated = DateTime.Now;
+            var endpoint = $"{Configuration["UrlApi"]}fixed-coast/create";
+            var response = await ApiHttp.PostAsJsonAsync(endpoint, Cost);
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Conta salva com sucesso!");
+                _nav.NavigateTo("/custos-fixos");
+            }
+            else
+            {
+                _toast.ShowError("Erro ao salvar conta.");
+            }
+        }
+        else
+        {
+            Cost.DateUpdated = DateTime.Now;
+            var endpoint = $"{Configuration["UrlApi"]}fixed-coast/update";
+            var response = await ApiHttp.PutAsJsonAsync(endpoint, Cost);
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Conta salva com sucesso!");
+                _nav.NavigateTo("/custos-fixos");
+            }
+            else
+            {
+                _toast.ShowError("Erro ao salvar conta.");
+            }
+        }
+    }
+}
