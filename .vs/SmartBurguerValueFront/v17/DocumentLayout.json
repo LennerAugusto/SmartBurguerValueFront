@@ -3,16 +3,8 @@
   "WorkspaceRootPath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{288F1464-B45B-4FFA-887E-6DCEA6C561BC}|SmartBurguerValueAdmin\\SmartBurguerValueAdmin.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervalueadmin\\pages\\clients\\clientsedit.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{288F1464-B45B-4FFA-887E-6DCEA6C561BC}|SmartBurguerValueAdmin\\SmartBurguerValueAdmin.csproj|solutionrelative:smartburguervalueadmin\\pages\\clients\\clientsedit.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\fixedcosts\\fixedcostsedit.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\pages\\fixedcosts\\fixedcostsedit.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{288F1464-B45B-4FFA-887E-6DCEA6C561BC}|SmartBurguerValueAdmin\\SmartBurguerValueAdmin.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervalueadmin\\pages\\clients\\clientslist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{288F1464-B45B-4FFA-887E-6DCEA6C561BC}|SmartBurguerValueAdmin\\SmartBurguerValueAdmin.csproj|solutionrelative:smartburguervalueadmin\\pages\\clients\\clientslist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{288F1464-B45B-4FFA-887E-6DCEA6C561BC}|SmartBurguerValueAdmin\\SmartBurguerValueAdmin.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervalueadmin\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{288F1464-B45B-4FFA-887E-6DCEA6C561BC}|SmartBurguerValueAdmin\\SmartBurguerValueAdmin.csproj|solutionrelative:smartburguervalueadmin\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -83,40 +75,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ClientsEdit.razor",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueAdmin\\Pages\\Clients\\ClientsEdit.razor",
-              "RelativeDocumentMoniker": "SmartBurguerValueAdmin\\Pages\\Clients\\ClientsEdit.razor",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueAdmin\\Pages\\Clients\\ClientsEdit.razor",
-              "RelativeToolTip": "SmartBurguerValueAdmin\\Pages\\Clients\\ClientsEdit.razor",
-              "ViewState": "AgIAAIcAAAAAAAAAAAAAAJkAAAAQAAAAAAAAAA==",
+              "Title": "Home.razor",
+              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueAdmin\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "SmartBurguerValueAdmin\\Pages\\Home.razor",
+              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueAdmin\\Pages\\Home.razor",
+              "RelativeToolTip": "SmartBurguerValueAdmin\\Pages\\Home.razor",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-24T02:06:13.573Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "FixedCostsEdit.razor",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\FixedCosts\\FixedCostsEdit.razor",
-              "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\FixedCosts\\FixedCostsEdit.razor",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\FixedCosts\\FixedCostsEdit.razor",
-              "RelativeToolTip": "SmartBurguerValueFront\\Pages\\FixedCosts\\FixedCostsEdit.razor",
-              "ViewState": "AgIAAFoAAAAAAAAAAAAAAHUAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-17T14:49:04.631Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ClientsList.razor",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueAdmin\\Pages\\Clients\\ClientsList.razor",
-              "RelativeDocumentMoniker": "SmartBurguerValueAdmin\\Pages\\Clients\\ClientsList.razor",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueAdmin\\Pages\\Clients\\ClientsList.razor",
-              "RelativeToolTip": "SmartBurguerValueAdmin\\Pages\\Clients\\ClientsList.razor",
-              "ViewState": "AgIAAGAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-17T14:43:22.266Z",
+              "WhenOpened": "2025-09-26T00:19:40.643Z",
               "EditorCaption": ""
             }
           ]

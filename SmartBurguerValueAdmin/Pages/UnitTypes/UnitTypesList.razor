@@ -1,0 +1,113 @@
+﻿@page "/unidades-de-medida"
+
+@using Blazored.Toast.Services
+@using DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen
+@using Radzen.Blazor
+@inject HttpClient Http
+@inject DialogService DialogService
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+@inject NavigationManager _nav
+
+<div class="p-2 p-md-4">
+    <h4>Lista de unidades de medida</h4>
+
+    <div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
+        <RadzenTextBox @bind-Value="filterName" Placeholder="Buscar por nome..." Style="width:250px;" Change="OnFilterChanged" />
+        <RadzenButton Text="Nova unidade de medida" Click="NavToCad" />
+    </div>
+
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="background-color: var(--orange)" />
+    }
+    else if (loadError)
+    {
+        <RadzenAlert Severity="AlertSeverity.Error">
+            Erro ao carregar os dados da API.
+        </RadzenAlert>
+    }
+    else
+    {
+        <RadzenDataGrid TItem="UnitTypesDTO" Data="@UnitsFilter" ColumnWidth="200px"
+                        AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
+                        Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
+            <Columns>
+                <RadzenDataGridColumn TItem="UnitTypesDTO" Property="Name" Title="Nome" />
+                <RadzenDataGridColumn TItem="UnitTypesDTO" Property="Symbol" Title="Símbolo" />
+                <RadzenDataGridColumn TItem="UnitTypesDTO" Property="BaseUnit" Title="Formato de uso" />
+                <RadzenDataGridColumn TItem="UnitTypesDTO" Title="Status">
+                    <Template Context="unit">
+                        @(unit.IsActive ? "Ativo" : "Inativo")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="UnitTypesDTO" Title="Ações">
+                    <Template Context="units">
+                        <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditUnitType(units.Id)" />
+                        <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoveUnitType(units.Id)" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+</div>
+@code {
+    private List<UnitTypesDTO> Units = new();
+    private string filterName = "";
+    private bool isLoading = true;
+    private bool loadError = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var baseUrl = Configuration["UrlApi"];
+            var endpoint = $"{baseUrl}unit-types/get-all";
+
+            Units = await Http.GetFromJsonAsync<List<UnitTypesDTO>>(endpoint) ?? new();
+
+            loadError = false;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
+            loadError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private IEnumerable<UnitTypesDTO> UnitsFilter =>
+        Units.Where(p => string.IsNullOrWhiteSpace(filterName) || p.Name.Contains(filterName, StringComparison.OrdinalIgnoreCase));
+
+    private void OnFilterChanged(string value) => filterName = value;
+
+    private void EditUnitType(Guid id)
+    {
+        _nav.NavigateTo($"/unidades-de-medida/edit/{id}");
+    }
+
+    private async Task RemoveUnitType(Guid id)
+    {
+        var baseUrl = Configuration["UrlApi"];
+        var endpoint = $"{baseUrl}unit-types/delete/{id}";
+
+        var response = await Http.DeleteAsync(endpoint);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _toast.ShowSuccess("Unidade de medida deletada com sucesso!");
+            Units = Units.Where(i => i.Id != id).ToList();
+        }
+        else
+        {
+            _toast.ShowError("Erro ao deletar unidade de medida.");
+        }
+    }
+    protected void NavToCad() => _nav.NavigateTo("/unidades-de-medida/cad");
+}

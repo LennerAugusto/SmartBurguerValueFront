@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace DTOs
 {
-    public class UnitTypesDTO
+    public class UnitTypesDTO : BaseDTO
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Symbol { get; set; }
         public string BaseUnit { get; set; }

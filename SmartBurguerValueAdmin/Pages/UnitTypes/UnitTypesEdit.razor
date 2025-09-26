@@ -1,0 +1,123 @@
+﻿@page "/unidades-de-medida/cad"
+@page "/unidades-de-medida/edit/{Id:guid?}"
+
+@using Blazored.Toast.Services
+@using DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@using Radzen
+@using Radzen.Blazor
+@using System.Security.Claims
+@inject NavigationManager _nav
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject CustomAuthStateProvider _auth
+@inject IToastService _toast
+<div class="d-flex flex-column justify-content-center align-items-center">
+    @if (Id != null)
+    {
+        <h4 class="text-dark">Editar unidade de medida</h4>
+    }
+    else
+    {
+        <h4 class="text-dark">Criar nova unidade de medida</h4>
+    }
+    <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Nome" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Unit.Name" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Símbolo" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Unit.Symbol" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Unidade base (unidade de medida de uso)" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Unit.BaseUnit" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-6">
+                <RadzenFormField Text="Fator de conversão" Style="width: 100%">
+                    <RadzenNumeric @bind-Value="@Unit.ConversionFactor" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 py-3">
+                <label style="display: flex; justify-content:center; align-items: center;">
+                    <RadzenCheckBox @bind-Value="Unit.IsActive" />
+                    <span style="margin-left: 8px;">Ativa?</span>
+                </label>
+            </div>
+        </div>
+        <div class="d-flex flex-row justify-content-center w-100">
+            <RadzenButton Text="Salvar"
+                          Click="@SaveUnit" />
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public Guid? Id { get; set; }
+    public UnitTypesDTO Unit { get; set; } = new();
+    public bool IsUpdate { get; set; } = false;
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id == null)
+        {
+            Unit = new UnitTypesDTO();
+        }
+        else
+        {
+            var baseUrl = Configuration["UrlApi"];
+            try
+            {
+                var endpoint = $"{baseUrl}unit-types/get-by-id?unityTypeId={Id}";
+                Unit = await Http.GetFromJsonAsync<UnitTypesDTO>(endpoint) ?? new();
+                if (Unit != null)
+                    IsUpdate = true;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Erro ao buscar unidade de medida: {ex.Message + Id}");
+            }
+        }
+
+    }
+
+    public async Task SaveUnit()
+    {
+        Unit.DateUpdated = DateTime.UtcNow;
+        if (IsUpdate)
+        {
+            var endpoint = $"{Configuration["UrlApi"]}unit-types/update";
+            var response = await Http.PutAsJsonAsync(endpoint, Unit);
+            if (response.IsSuccessStatusCode)
+            {
+                _toast.ShowSuccess("Unidade de medida atualizada com sucesso!");
+                _nav.NavigateTo("/unidades-de-medida");
+            }
+            else
+            {
+                _toast.ShowError("Erro ao atualizar unidade de medida!");
+            }
+        }
+        else
+        {
+            var endpoint = $"{Configuration["UrlApi"]}unit-types/create";
+            var response = await Http.PostAsJsonAsync(endpoint, Unit);
+            if (response.IsSuccessStatusCode)
+            {
+              _toast.ShowSuccess("Unidade de medida criada com sucesso!");
+                _nav.NavigateTo("/unidades-de-medida");
+            }
+            else
+            {
+                _toast.ShowError("Erro ao salvar empresa.");
+            }
+        }
+    }
+
+}
