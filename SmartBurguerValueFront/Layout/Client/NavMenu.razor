@@ -1,13 +1,20 @@
-﻿<div class="top-row ps-3 navbar" style="background-color:white;">
+﻿@using SmartBurguerValueRCL.Services.SmartBurguerValueRCL.Services
+@inject EnterpriseProvider EnterpriseProvider
+@inject NavigationManager Navigation
+@inject CustomAuthStateProvider AuthProvider
+@inject IJSRuntime JS
+@inject HttpClient Http
+
+<div class="top-row ps-3 navbar" style="background-color:white;">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">SmartBurguerValueFront</a>
+        <a class="navbar-brand" href=""></a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" style="background-color:var(--white)!important;" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass nav-scrollable" style="background-color:var(--white)!important; overflow:hidden" @onclick="ToggleNavMenu">
     <nav class="nav flex-column">
         <div class="nav-item px-3">
             <div class="border-custom px-2">
@@ -65,6 +72,13 @@
                 </NavLink>
             </div>
         </div>
+        <div class="nav-item px-3 mt-3 mt-md-5">
+            <div class="border-custom px-2">
+                <NavLink class="nav-link item-customize" @onclick=Logout Match="NavLinkMatch.All">
+                    <i class="fa-solid fa-right-from-bracket mx-1 mx-md-3"></i> Sair
+                </NavLink>
+            </div>
+        </div>
     </nav>
 </div>
 
@@ -76,5 +90,22 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+    private async Task Logout()
+    {
+        EnterpriseProvider.Clear();
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+            var username = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            if (!string.IsNullOrWhiteSpace(username))
+                await Http.PostAsync($"api/auth/revoke/{username}", null);
+        }
+
+        await JS.InvokeVoidAsync("localStorage.removeItem", "authToken");
+        AuthProvider.NotifyUserLogout();
+        Navigation.NavigateTo("/", forceLoad: true);
     }
 }

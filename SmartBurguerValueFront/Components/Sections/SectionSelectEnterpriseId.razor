@@ -1,0 +1,48 @@
+﻿@using DTOs
+@using Radzen.Blazor
+@using SmartBurguerValueRCL.Services.SmartBurguerValueRCL.Services
+@inject IConfiguration Configuration
+@inject HttpClient Http
+@inject EnterpriseProvider EnterpriseProvider
+
+<div class="w-25">
+    <RadzenFormField Text="Selecione a Construtora" Style="width: 100%">
+        <RadzenDropDown @bind-Value="SelectedConstructionCompanyId"
+                        TValue="Guid?"
+                        Data="@Enterprises"
+                        TextProperty="Name"
+                        ValueProperty="Id"
+                        Placeholder="Selecione a construtora"
+                        Style="width: 100%"
+                        Change="OnConstructionCompanyChanged" />
+    </RadzenFormField>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnEnterpriseSelected { get; set; }
+
+    public Guid? SelectedConstructionCompanyId { get; set; }
+    public List<EnterpriseDTO> Enterprises { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Enterprises = await Http.GetFromJsonAsync<List<EnterpriseDTO>>($"{Configuration["UrlApi"]}enterprise/get-all") ?? new();
+
+        if (Enterprises.Any())
+        {
+            SelectedConstructionCompanyId = Enterprises.First().Id;
+            await EnterpriseProvider.SetEnterpriseId(SelectedConstructionCompanyId.Value);
+            await OnEnterpriseSelected.InvokeAsync();
+        }
+    }
+
+    private async Task OnConstructionCompanyChanged(object value)
+    {
+        SelectedConstructionCompanyId = (Guid?)value;
+        if (SelectedConstructionCompanyId.HasValue)
+        {
+            await EnterpriseProvider.SetEnterpriseId(SelectedConstructionCompanyId.Value);
+            await OnEnterpriseSelected.InvokeAsync();
+        }
+    }
+}

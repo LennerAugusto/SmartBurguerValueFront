@@ -734,6 +734,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
+          "Constants": "1.0.0",
           "Microsoft.AspNetCore.Components.Authorization": "9.0.8",
           "Microsoft.AspNetCore.Components.Web": "9.0.8",
           "Radzen.Blazor": "7.3.3",
@@ -1480,6 +1481,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
+          "Constants": "1.0.0",
           "Microsoft.AspNetCore.Components.Authorization": "9.0.8",
           "Microsoft.AspNetCore.Components.Web": "9.0.8",
           "Radzen.Blazor": "7.3.3",

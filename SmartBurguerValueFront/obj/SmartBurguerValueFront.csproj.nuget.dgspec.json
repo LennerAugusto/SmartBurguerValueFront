@@ -168,7 +168,11 @@
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\Constants\\Constants.csproj": {
+                "projectPath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\Constants\\Constants.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

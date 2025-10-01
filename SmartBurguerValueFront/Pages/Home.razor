@@ -4,28 +4,35 @@
 @using DTOs.Analysis
 @using Microsoft.AspNetCore.Components.Authorization
 @using SmartBurguerValueFront.Components.Cards
+@using SmartBurguerValueRCL.Services.SmartBurguerValueRCL.Services
 @inject CustomAuthStateProvider AuthenticationStateProvider
 @inject IConfiguration Configuration
 @inject HttpClient Http
-
+@inject EnterpriseProvider EnterpriseProvider
+@*
 <PageTitle>Home</PageTitle>
 
-<div class="p-2 p-md-4">
+ <div class="p-2 p-md-4">
     <h4 class="text-dark">Dashboard</h4>
     <p style="color:var(--grey-30)">Olá @userName, bem-vindo de volta!</p>
+
     <div class="row">
         <div class="col-9 row">
             <div class="col-12 d-block d-md-none">
                 <div class="col-12">
-                    <select class="form-select" @bind="SelectedPeriod" style="border: none; text-align:start">
+                    <select class="form-select"
+                            @onchange="PeriodChanged"
+                            style="border: none; text-align:start">
                         <option value="@EPeriod.SinceTheBeginning">Desde o início</option>
                         <option value="@EPeriod.LastYear">12 meses</option>
                         <option value="@EPeriod.LastSemester">6 meses</option>
                         <option value="@EPeriod.LastFourWeeks">30 dias</option>
                         <option value="@EPeriod.LastWeek">7 dias</option>
                     </select>
+
                 </div>
             </div>
+
             @if (analysisHomeDTO != null)
             {
                 <div class="col-12 col-md-4 mb-3">
@@ -38,28 +45,36 @@
                     <SumaryCardHome UrlIcon="img/icons/dollar.webp" TitleCard="Total em Vendas" Number="@analysisHomeDTO.TotalSales" ISValue />
                 </div>
             }
+
             <div class="col-12">
-                <ApexChart TItem="Order" Title="Basic Sample">
+                <div class="w-100 p-3" style="border-radius:10px; background-color: white;" >
+                    @if (InvoicingSeries != null && InvoicingSeries.Any())
+                    {
+                        <ApexChart TItem="InvoicingSeriesDTO"
+                                   Title="Comparativo de Faturamento"
+                                   @key="SelectedPeriod">
+                            <ApexPointSeries TItem="InvoicingSeriesDTO"
+                                             Items="InvoicingSeries"
+                                             SeriesType="@SeriesType.Area"
+                                             Name="Faturamento Bruto"
+                                             XValue="@(e => e.Label)"
+                                             YValue="@(e => e.Invoicing)"
+                                             Color="#FF7C01" />
 
-                    <ApexPointSeries TItem="Order"
-                                     Items="orders"
-                                     SeriesType="@SeriesType.Area"
-                                     Name="Gross Value"
-                                     XValue="@(e => e.Country)"
-                                     YAggregate="@(e => e.Sum(e => e.GrossValue))"
-                                     OrderByDescending="e => e.Y" />
-
-                    <ApexPointSeries TItem="Order"
-                                     Items="orders"
-                                     SeriesType="@SeriesType.Area"
-                                     Name="Net Value"
-                                     XValue="@(e => e.Country)"
-                                     YAggregate="@(e => e.Sum(e => e.NetValue))"
-                                     OrderByDescending="e => e.Y" />
-                </ApexChart>
+                            <ApexPointSeries TItem="InvoicingSeriesDTO"
+                                             Items="InvoicingSeries"
+                                             SeriesType="@SeriesType.Area"
+                                             Name="Faturamento Líquido"
+                                             XValue="@(e => e.Label)"
+                                             YValue="@(e => e.NetValue)"
+                                             Color="#333333" />
+                        </ApexChart>
+                    }
+                </div>
             </div>
         </div>
-        <div class="col-3 d-block d-md-block">
+
+        <div class="col-3 d-none d-md-block">
             <select class="form-select"
                     @onchange="PeriodChanged"
                     style="border: none; text-align:start">
@@ -69,10 +84,11 @@
                 <option value="@EPeriod.LastFourWeeks">30 dias</option>
                 <option value="@EPeriod.LastWeek">7 dias</option>
             </select>
+
             @if (BestSellingProducts != null)
             {
                 <h4 class="text-dark d-block d-flex flex-row justify-content-center my-3">Mais Vendidos:</h4>
-                <div class="d-flex flex-column justify-content-center align-items-center ">
+                <div class="d-flex flex-column justify-content-center align-items-center">
                     @foreach (var item in BestSellingProducts.Take(6))
                     {
                         <div class="my-4 col-12 col-lg-6">
@@ -81,104 +97,180 @@
                     }
                 </div>
             }
+        </div>
+    </div>
+</div> *@
+<PageTitle>Home</PageTitle>
 
+<div class="p-2 p-md-4">
+    <h4 class="text-dark">Dashboard</h4>
+    <p style="color:var(--grey-30)">Olá @userName, bem-vindo de volta!</p>
+
+    <div class="row">
+        <div class="col-12 col-md-9">
+            <div class="d-block d-md-none mb-3">
+                <select class="form-select"
+                        @onchange="PeriodChanged"
+                        style="border: none; text-align:start">
+                    <option value="@EPeriod.SinceTheBeginning">Desde o início</option>
+                    <option value="@EPeriod.LastYear">12 meses</option>
+                    <option value="@EPeriod.LastSemester">6 meses</option>
+                    <option value="@EPeriod.LastFourWeeks">30 dias</option>
+                    <option value="@EPeriod.LastWeek">7 dias</option>
+                </select>
+            </div>
+            @if (analysisHomeDTO != null)
+            {
+                <div class="row mb-3">
+                    <div class="col-12 col-md-4 mb-3">
+                        <SumaryCardHome UrlIcon="img/icons/receipt.webp" TitleCard="Total de Pedidos" Number="@analysisHomeDTO.TotalOrders" />
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                        <SumaryCardHome UrlIcon="img/icons/users.webp" TitleCard="Total em Gastos" Number="@analysisHomeDTO.TotalExpanses" IsValue />
+                    </div>
+                    <div class="col-12 col-md-4 mb-3">
+                        <SumaryCardHome UrlIcon="img/icons/dollar.webp" TitleCard="Total em Vendas" Number="@analysisHomeDTO.TotalSales" ISValue />
+                    </div>
+                </div>
+            }
+            <div class="p-3 p-md-5" style="background-color: white; border-radius:12px;">
+                @if (InvoicingSeries != null && InvoicingSeries.Any())
+                {
+                    <div class="m-2 m-md-4">
+                        <ApexChart TItem="InvoicingSeriesDTO"
+                                   Title="Comparativo de Faturamento"
+                                   @key="SelectedPeriod"
+                                    Height="400">
+                            <ApexPointSeries TItem="InvoicingSeriesDTO"
+                                             Items="InvoicingSeries"
+                                             SeriesType="@SeriesType.Area"
+                                             Name="Faturamento Bruto"
+                                             XValue="@(e => e.Label)"
+                                             YValue="@(e => e.Invoicing)"
+                                             Color="#FF7C01" />
+
+                            <ApexPointSeries TItem="InvoicingSeriesDTO"
+                                             Items="InvoicingSeries"
+                                             SeriesType="@SeriesType.Area"
+                                             Name="Faturamento Líquido"
+                                             XValue="@(e => e.Label)"
+                                             YValue="@(e => e.NetValue)"
+                                             Color="#333333" />
+                        </ApexChart>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <div class="d-none d-md-block mb-3">
+                <select class="form-select"
+                        @onchange="PeriodChanged"
+                        style="border: none; text-align:start">
+                    <option value="@EPeriod.SinceTheBeginning">Desde o início</option>
+                    <option value="@EPeriod.LastYear">12 meses</option>
+                    <option value="@EPeriod.LastSemester">6 meses</option>
+                    <option value="@EPeriod.LastFourWeeks">30 dias</option>
+                    <option value="@EPeriod.LastWeek">7 dias</option>
+                </select>
+            </div>
+            @if (BestSellingProducts != null && BestSellingProducts.Any())
+            {
+                <h4 class="text-dark text-center my-3">Mais Vendidos:</h4>
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    @foreach (var item in BestSellingProducts.Take(6))
+                    {
+                        <div class="my-4 col-12 col-lg-6">
+                            <CardProduct ItemHome="item" />
+                        </div>
+                    }
+                </div>
+            }
         </div>
     </div>
 </div>
 
-
-
-
 @code {
-    private bool isLoading = true;
-    private bool loadError = false;
     private string? userName;
-    public Guid? EnterpriseId { get; set; }
+    private Guid? EnterpriseId;
+    private EPeriod SelectedPeriod { get; set; } = EPeriod.SinceTheBeginning;
+    private List<InvoicingSeriesDTO> InvoicingSeries { get; set; } = new();
     public List<BestSellingProductsDTO> BestSellingProducts { get; set; } = new();
     public AnalysisHomeDTO analysisHomeDTO { get; set; } = new AnalysisHomeDTO();
-    private EPeriod SelectedPeriod { get; set; } = EPeriod.SinceTheBeginning;
-
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var Role = authState.User.IsInRole("Admin") ? "Admin" : "Enterprise";
         var user = authState.User;
 
         if (user.Identity?.IsAuthenticated == true)
-        {
             userName = user.Identity.Name;
+        if (Role == "Admin")
+        {
+            EnterpriseId = await EnterpriseProvider.GetEnterpriseIdAsync();
+            EnterpriseProvider.OnEnterpriseChanged += async (id) =>
+            {
+                EnterpriseId = id;
+                await LoadInitialized();
+                StateHasChanged();
+            };
         }
-        await LoadInitialized();
+        else
+        {
+            EnterpriseId = await AuthenticationStateProvider.GetEnterpriseId();
+        }
 
+        await LoadInitialized();
     }
+
     private async Task PeriodChanged(ChangeEventArgs e)
     {
         if (Enum.TryParse<EPeriod>(e.Value?.ToString(), out var period))
         {
+            InvoicingSeries.Clear();
             SelectedPeriod = period;
-            int periodNumber = (int)SelectedPeriod;
-            Console.WriteLine($"Período selecionado em número: {periodNumber}");
-
             await LoadInitialized();
+            StateHasChanged();
         }
     }
 
     public async Task LoadInitialized()
     {
+        if (!EnterpriseId.HasValue) return;
+
+        var analysisDto = new RequestAnalysisDTO
+        {
+            EnterpriseId = EnterpriseId.Value,
+            Period = SelectedPeriod
+        };
+
+        var baseUrl = Configuration["UrlApi"];
+        var endpoint = $"{baseUrl}analysis/best-selling-products/by-enterprise-id";
+        var endpointAnalysis = $"{baseUrl}analysis/analysis-home/get-all";
+        var endpointInvoicing = $"{baseUrl}analysis/invoicing/by-enterprise-id";
         try
         {
-            EnterpriseId = await AuthenticationStateProvider.GetEnterpriseId();
-
-            var analysisDto = new RequestAnalysisDTO
-            {
-                EnterpriseId = EnterpriseId,
-                Period = SelectedPeriod
-            };
-
-            var baseUrl = Configuration["UrlApi"];
-            var endpoint = $"{baseUrl}analysis/best-selling-products/by-enterprise-id";
-            var endpointAnalysis = $"{baseUrl}analysis/analysis-home/get-all";
-
             var response = await Http.PostAsJsonAsync(endpoint, analysisDto);
             var responseAnalysis = await Http.PostAsJsonAsync(endpointAnalysis, analysisDto);
+            var responseInvoicing = await Http.PostAsJsonAsync(endpointInvoicing, analysisDto);
 
-            if (response.IsSuccessStatusCode && responseAnalysis.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode && responseAnalysis.IsSuccessStatusCode && responseInvoicing.IsSuccessStatusCode)
             {
-                BestSellingProducts = await response.Content.ReadFromJsonAsync<List<BestSellingProductsDTO>>() ?? new();
-                analysisHomeDTO = await responseAnalysis.Content.ReadFromJsonAsync<AnalysisHomeDTO>() ?? new();
-                loadError = false;
+                BestSellingProducts = await response.Content
+                    .ReadFromJsonAsync<List<BestSellingProductsDTO>>() ?? new();
+                analysisHomeDTO = await responseAnalysis.Content
+                    .ReadFromJsonAsync<AnalysisHomeDTO>() ?? new();
+                InvoicingSeries = await responseInvoicing.Content
+                    .ReadFromJsonAsync<List<InvoicingSeriesDTO>>() ?? new();
             }
             else
             {
-                loadError = true;
-                var errorMsg = await response.Content.ReadAsStringAsync();
-                Console.Error.WriteLine($"Erro da API: {errorMsg}");
+                Console.Error.WriteLine("Erro ao buscar dados da API.");
             }
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
-            loadError = true;
         }
-        finally
-        {
-            isLoading = false;
-        }
-        StateHasChanged();
     }
-
-    public class Order
-    {
-        public string Country { get; set; } = string.Empty;
-        public decimal GrossValue { get; set; }
-        public decimal NetValue { get; set; }
-    }
-
-    private List<Order> orders = new()
-    {
-        new Order { Country = "Brasil", GrossValue = 1000, NetValue = 850 },
-        new Order { Country = "EUA", GrossValue = 1500, NetValue = 1400 },
-        new Order { Country = "Alemanha", GrossValue = 800, NetValue = 700 },
-        new Order { Country = "Japão", GrossValue = 1200, NetValue = 950 }
-    };
 }
