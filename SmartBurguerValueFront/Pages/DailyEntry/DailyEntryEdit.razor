@@ -172,13 +172,15 @@
 
         var produto = ProductsDTORequest.FirstOrDefault(p => p.Id == SelectedItemId);
         var combo = CombosRequest.FirstOrDefault(c => c.Id == SelectedItemId);
-
+        Console.WriteLine(produto);
+        Console.WriteLine(combo);
         if (produto != null)
         {
             newItems.Add(new DailyEntryItemsDTO
                 {
                     Id = Guid.NewGuid(),
                     ProductId = produto.Id,
+                    ComboId = null,
                     Name = produto.Name,
                     Quantity = SelectedQuantity,
                 });
@@ -189,6 +191,7 @@
                 {
                     Id = Guid.NewGuid(),
                     ComboId = combo.Id,
+                    ProductId = null,
                     Name = combo.Name,
                     Quantity = SelectedQuantity,
                 });

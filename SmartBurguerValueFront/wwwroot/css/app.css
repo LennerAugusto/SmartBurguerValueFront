@@ -256,3 +256,33 @@ tbody tr:last-child td:last-child {
     height: 100%;
     object-fit: cover;
 }
+
+.container-graphs {
+    background-color: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.title-card-small {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 120%;
+    color: #333333;
+}
+.descritpion-card-small {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 125%;
+    color: #858585;
+}
+
+/*Fonte padrão dos gráficos*/
+.apexcharts-text,
+.apexcharts-title-text,
+.apexcharts-legend-text {
+    font-family: 'Figtree', sans-serif; 
+    font-weight: 600; 
+    font-style: normal; 
+    line-height: 1; 
+    letter-spacing: 0;
+}

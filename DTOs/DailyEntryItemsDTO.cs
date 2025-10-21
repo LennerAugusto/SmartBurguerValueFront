@@ -12,8 +12,8 @@ namespace Constants
         public Guid? Id { get; set; }
         public Guid? DailyEntryId { get; set; }
         public Guid? ProductId { get; set; }
-        public Guid? ComboId { get; set; } = Guid.Empty;
-        public string? Name { get; set; } = string.Empty;
+        public Guid? ComboId { get; set; } 
+        public string? Name { get; set; }
         public decimal? Quantity { get; set; }
         public decimal? TotalRevenue { get; set; }
         public decimal? TotalCPV { get; set; }

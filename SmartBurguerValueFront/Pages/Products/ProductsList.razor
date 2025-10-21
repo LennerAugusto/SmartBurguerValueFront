@@ -1,6 +1,9 @@
 ﻿@page "/produtos"
+@using ApexCharts
 @using Blazored.Toast.Services
+@using Constants
 @using DTOs
+@using DTOs.Analysis
 @using Microsoft.AspNetCore.Components.Authorization
 @using Radzen
 @using Radzen.Blazor
@@ -13,10 +16,79 @@
 @inject CustomAuthStateProvider _auth
 @inject IToastService _toast
 @inject NavigationManager _nav
+@inject IJSRuntime JS
 
 <div class="p-2 p-md-4">
     <h4>Produtos</h4>
+    <div class="row align-items-stretch mb-2 mb-md-3">
+        <div class="col-12 col-md-2 h-100">
+            <div class="mb-3">
+                <select class="form-select"
+                        @onchange="PeriodChanged"
+                        style="border: none; text-align:start">
+                    <option value="@EPeriod.LastWeek">7 dias</option>
+                    <option value="@EPeriod.LastFourWeeks">30 dias</option>
+                    <option value="@EPeriod.LastSemester">6 meses</option>
+                    <option value="@EPeriod.LastYear">12 meses</option>
+                    <option value="@EPeriod.SinceTheBeginning">Desde o início</option>
+                </select>
+            </div>
+            @if (MarginProfit != null && BestSellings.Any())
+            {
+                <div class="d-flex flex-column justify-content-center flex-grow-1">
+                    <div class="container-graphs d-flex flex-column align-items-center w-100 mb-3 gap-3 gap-md-4 p-2 p-md-4">
+                        <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket">
+                        <span class="title-card-small">R$ @MarginProfit.Profit</span>
+                        <p class="descritpion-card-small">Lucro com produtos</p>
+                    </div>
+                    <div class="container-graphs d-flex flex-column align-items-center w-100 gap-3 gap-md-4 p-2 p-md-4">
+                        <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket">
+                        <span class="title-card-small">@MarginProfit.Margin %</span>
+                        <p class="descritpion-card-small">Margem de Lucro</p>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-12 col-md-5 h-100 p-1">
+            @if (BestSellings != null && BestSellings.Any())
+            {
+                <div class="container-graphs p-2 p-md-4">
+                    <ApexChart TItem="BestSellingProductsByPeriodDTO"
+                               Title="Produtos mais vendidos"
+                               @key="SelectedPeriod"
+                               Height="500">
+                        <ApexPointSeries TItem="BestSellingProductsByPeriodDTO"
+                                         Items="BestSellings"
+                                         SeriesType="@SeriesType.Area"
+                                         Name="Quantidade"
+                                         XValue="@(e => $"{e.Label} - {e.NameProduct}")"
+                                         YValue="@(e => e.Quantity)"
+                                         Color="#FF7C01" />
+                    </ApexChart>
+                </div>
+            }
+        </div>
+        <div class="col-12 col-md-4 h-100">
+            @if (BestMargins != null && BestMargins.Any())
+            {
+                <div class="container-graphs p-2 p-md-4">
+                    <ApexChart TItem="GetBestMarginDTO"
+                               Title="Produtos com melhores margem"
+                               Height="500"
+                               Options="chartOptions">
 
+                        <ApexPointSeries TItem="GetBestMarginDTO"
+                                         Items="BestMargins"
+                                         SeriesType="SeriesType.Donut"
+                                         Name="Gross Value"
+                                         XValue="@(e => e.Name)"
+                                         YValue="e => e.Margin"
+                                         OrderByDescending="e=>e.Y" />
+                    </ApexChart>
+                </div>
+            }
+        </div>
+    </div>
     <div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
         <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
         <ButtonPrimary BackgroundColor="bg-orange" Text="Novo Produto" Url="/produtos/cad" Icon="fas fa-plus icon-inside-input" />
@@ -43,7 +115,7 @@
                     <Template Context="products">
                         R$ @(products.SellingPrice)
                     </Template>
-                 </RadzenDataGridColumn>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="ProductsDTO" Title="Custo de produção">
                     <Template Context="products">
                         R$ @(products.CPV)
@@ -67,24 +139,41 @@
         </RadzenDataGrid>
     }
 </div>
+
 @code {
     private List<ProductsDTO> Products = new();
+    private GetMarginProfitDTO MarginProfit { get; set; } = new();
+    public List<BestSellingProductsByPeriodDTO> BestSellings { get; set; } = new();
+    public List<GetBestMarginDTO> BestMargins { get; set; } = new();
     public Guid? EnterpriseId { get; set; }
     private string filterName = "";
     private bool isLoading = true;
     private bool loadError = false;
+    private EPeriod SelectedPeriod { get; set; } = EPeriod.LastWeek;
+    private ApexChartOptions<GetBestMarginDTO> chartOptions = new();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             EnterpriseId = await _auth.GetEnterpriseId();
+            await GetDataGraphs();
             var baseUrl = Configuration["UrlApi"];
             var endpoint = $"{baseUrl}products/get-all/by-enterprise-id?EnterpriseId={EnterpriseId}";
-
             Products = await Http.GetFromJsonAsync<List<ProductsDTO>>(endpoint) ?? new();
-
+            var endpointBestMargin = $"{baseUrl}analysis/products-best-margin/by-enterprise-id?EnterpriseId={EnterpriseId}";
+            var response = await Http.PostAsync(endpointBestMargin, content: new StringContent(""));
+            if (response.IsSuccessStatusCode)
+            {
+                BestMargins = await response.Content.ReadFromJsonAsync<List<GetBestMarginDTO>>() ?? new();
+            }
             loadError = false;
+            chartOptions = new ApexChartOptions<GetBestMarginDTO>
+            {
+                Colors = new List<string> { "#FF6B1E", "#FDCEA1", "#FFEEE0", "#333333", "#858585" },
+                Title = new Title { Align = Align.Center, },
+                Legend = new Legend { HorizontalAlign = Align.Center }
+            };
         }
         catch (Exception ex)
         {
@@ -138,6 +227,36 @@
     private async Task ShowProductDetails(Guid id)
     {
         _nav.NavigateTo($"/produto/detalhes/{id}");
+    }
+    private async Task PeriodChanged(ChangeEventArgs e)
+    {
+        if (Enum.TryParse<EPeriod>(e.Value?.ToString(), out var period))
+        {
+            BestSellings.Clear();
+            SelectedPeriod = period;
+            await GetDataGraphs();
+            StateHasChanged();
+        }
+    }
+    private async Task GetDataGraphs()
+    {
+        var analysisDto = new RequestAnalysisDTO
+        {
+            EnterpriseId = EnterpriseId.Value,
+            Period = SelectedPeriod
+        };
+        var baseUrl = Configuration["UrlApi"];
+        var endpointTicket = $"{baseUrl}analysis/get-margin-and-profit-products/by-enterprise-id";
+        var endpointBestSelling = $"{baseUrl}analysis/get-best-selling-products/by-enterprise-id";
+        var responseBestSelling = await Http.PostAsJsonAsync(endpointBestSelling, analysisDto);
+        var responseTicket = await Http.PostAsJsonAsync(endpointTicket, analysisDto);
+        if (responseTicket.IsSuccessStatusCode && responseBestSelling.IsSuccessStatusCode)
+        {
+            MarginProfit = await responseTicket.Content
+                .ReadFromJsonAsync<GetMarginProfitDTO>() ?? new();
+            BestSellings = await responseBestSelling.Content
+            .ReadFromJsonAsync<List<BestSellingProductsByPeriodDTO>>() ?? new();
+        }
     }
 
 }

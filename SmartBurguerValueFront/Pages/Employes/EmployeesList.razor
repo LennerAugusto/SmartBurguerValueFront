@@ -14,59 +14,63 @@
 @inject NavigationManager _nav
 
 <div class="p-2 p-md-4">
-<h4>Lista de Funcionários</h4>
+    <h4>Lista de Funcionários</h4>
 
-<div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
-    <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
-    <ButtonPrimary BackgroundColor="bg-orange" Text="Novo Funcionário" Url="/funcionarios/cad" Icon="fas fa-plus icon-inside-input" />
-</div>
+    <div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
+        <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
+        <ButtonPrimary BackgroundColor="bg-orange" Text="Novo Funcionário" Url="/funcionarios/cad" Icon="fas fa-plus icon-inside-input" />
+    </div>
 
-@if (isLoading)
-{
-    <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="background-color: var(--orange)" />
-}
-else if (loadError)
-{
-    <RadzenAlert Severity="AlertSeverity.Error">
-        Erro ao carregar os dados da API.
-    </RadzenAlert>
-}
-else
-{
-    <RadzenDataGrid TItem="EmployesDTO" Data="@EmployesFilter" ColumnWidth="200px"
-    AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
-    Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
-        <Columns>
-            <RadzenDataGridColumn TItem="EmployesDTO" Property="Name" Title="Nome" />
-            <RadzenDataGridColumn TItem="EmployesDTO" Property="Position" Title="Cargo" />
-            <RadzenDataGridColumn TItem="EmployesDTO" Title="Tipo de Contrato">
-                <Template Context="employee">
-                    @if (employee.EmploymentType.Equals("Monthly", StringComparison.OrdinalIgnoreCase))
-                    {
-                        <span>Mensal</span>
-                    }
-                    else
-                    {
-                        <span>Diário</span>
-                    }
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="EmployesDTO" Property="MonthlySalary" Title="Salário Mensal" />
-            <RadzenDataGridColumn TItem="EmployesDTO" Property="" Title="% do Markup" />
-            <RadzenDataGridColumn TItem="EmployesDTO" Title="Status">
-                <Template Context="employee">
-                    @(employee.IsActive ? "Ativo" : "Inativo")
-                </Template>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="EmployesDTO" Title="Ações">
-                <Template Context="employee">
-                    <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditEmployee(employee.Id)" />
-                    <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoveEmployee(employee.Id)" />
-                </Template>
-            </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
-}
+    @if (isLoading)
+    {
+        <RadzenProgressBar Mode="ProgressBarMode.Indeterminate" Style="background-color: var(--orange)" />
+    }
+    else if (loadError)
+    {
+        <RadzenAlert Severity="AlertSeverity.Error">
+            Erro ao carregar os dados da API.
+        </RadzenAlert>
+    }
+    else
+    {
+        <RadzenDataGrid TItem="EmployesDTO" Data="@EmployesFilter" ColumnWidth="200px"
+                        AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
+                        Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
+            <Columns>
+                <RadzenDataGridColumn TItem="EmployesDTO" Property="Name" Title="Nome" />
+                <RadzenDataGridColumn TItem="EmployesDTO" Property="Position" Title="Cargo" />
+                <RadzenDataGridColumn TItem="EmployesDTO" Title="Tipo de Contrato">
+                    <Template Context="employee">
+                        @if (employee.EmploymentType.Equals("Monthly", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span>Mensal</span>
+                        }
+                        else
+                        {
+                            <span>Diário</span>
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="EmployesDTO" Title="Salário Mensal">
+                    <Template Context="employee">
+                        R$ @string.Format("{0:N2}", employee.MonthlySalary)
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="EmployesDTO" Property="" Title="% do Markup" />
+                <RadzenDataGridColumn TItem="EmployesDTO" Title="Status">
+                    <Template Context="employee">
+                        @(employee.IsActive ? "Ativo" : "Inativo")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="EmployesDTO" Title="Ações">
+                    <Template Context="employee">
+                        <RadzenButton Icon="edit" Size="ButtonSize.Small" Style="margin-right: 5px;" Click="() => EditEmployee(employee.Id)" />
+                        <RadzenButton Icon="delete" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Danger" Click="() => RemoveEmployee(employee.Id)" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
 </div>
 @code {
     private List<EmployesDTO> Employes = new();
@@ -83,7 +87,7 @@ else
             var baseUrl = Configuration["UrlApi"];
             var endpoint = $"{baseUrl}employee/get-all/by-enterprise-id?enterpriseId={EnterpriseId}";
 
-            Employes  = await Http.GetFromJsonAsync<List<EmployesDTO>>(endpoint) ?? new();
+            Employes = await Http.GetFromJsonAsync<List<EmployesDTO>>(endpoint) ?? new();
 
             loadError = false;
         }
