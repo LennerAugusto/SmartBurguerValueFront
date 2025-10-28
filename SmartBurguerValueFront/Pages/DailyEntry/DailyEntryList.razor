@@ -14,6 +14,8 @@
 @inject IToastService _toast
 @inject NavigationManager _nav
 
+<PageTitle>Fechamento diário</PageTitle>
+
 <div class="p-2 p-md-4">
     <h4>Fechamentos Diários</h4>
 
@@ -38,7 +40,7 @@
                         AllowPaging="true" PageSize="10" AllowSorting="true" ShowPagingSummary="true"
                         Style="box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 12px;">
             <Columns>
-                <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Total de itens vendidos">
+                <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Data do fechamento">
                     <Template Context="dailyEntry">
                         @(dailyEntry.EntryDate.ToString("dd/MM/yyyy"))
                     </Template>
@@ -46,7 +48,7 @@
                 <RadzenDataGridColumn TItem="DailyEntryDTO" Property="Description" Title="Descrição" />
                 <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Total de itens vendidos">
                     <Template Context="dailyEntry">
-                        @(dailyEntry.TotalItems?.ToString("N2") ?? "0")
+                        @(dailyEntry.TotalItems?.ToString("N0") ?? "0")
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="DailyEntryDTO" Title="Receita">
@@ -91,7 +93,6 @@
             var endpoint = $"{baseUrl}daily-entry/get-all/by-enterprise-id?enterpriseId={EnterpriseId}";
 
             DailyEntryes = await Http.GetFromJsonAsync<List<DailyEntryDTO>>(endpoint) ?? new();
-
             loadError = false;
         }
         catch (Exception ex)

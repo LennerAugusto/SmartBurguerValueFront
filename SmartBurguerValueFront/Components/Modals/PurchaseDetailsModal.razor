@@ -1,6 +1,8 @@
 ﻿@using DTOs
 @using Radzen.Blazor
 @inherits ComponentBase
+@inject HttpClient Http
+@inject IConfiguration Configuration
 
 @if (Purchase != null)
 {
@@ -10,19 +12,35 @@
         <p><strong>Fornecedor:</strong> @Purchase.SupplierName</p>
         <p><strong>Data:</strong> @Purchase.PurchaseDate.ToString("dd/MM/yyyy")</p>
         <p><strong>Valor Total:</strong> R$ @Purchase.TotalAmount.ToString("N2")</p>
-
+        @Purchase.Items.Count()
         <h5 style="color: var(--orange);">Produtos</h5>
         <RadzenDataGrid TItem="PurchaseItemsDTO" Data="@Purchase.Items" ShowPagingSummary="false"
                         AllowPaging="false" Style="margin-top: 15px;">
             <Columns>
-                <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="Name" Title="Item" />
-                <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="Quantity" Title="Quantidade" />
-                <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="UnitPrice" Title="Preço Unitário" />
+                <RadzenDataGridColumn TItem="PurchaseItemsDTO" Property="NameItem" Title="Item" />
+                <RadzenDataGridColumn TItem="PurchaseItemsDTO"  Title="Quantidade" >
+                    <Template Context="purchase">
+                        @(purchase.Quantity + purchase.UnityOfMensureSymbol)
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="PurchaseItemsDTO" Title="Valor Unitário">
+                    <Template Context="purchase">
+                        @("R$" + purchase.UnitPrice)
+                    </Template>
+                </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
     </div>
 }
 
 @code {
-    [Parameter] public PurchasesDTO Purchase { get; set; } = default!;
+    [Parameter] public Guid PurchaseId { get; set; } = default!;
+    private PurchasesDTO? Purchase { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var baseUrl = Configuration["UrlApi"];
+        var endpoint = $"{baseUrl}purchase/get-by-id?PurchaseId={PurchaseId}";
+        Purchase = await Http.GetFromJsonAsync<PurchasesDTO>(endpoint) ?? new();
+    }
 }

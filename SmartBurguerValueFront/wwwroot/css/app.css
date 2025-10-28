@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
 
 html, body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Figtree', sans-serif;
 }
 h1:focus {
     outline: none;
@@ -135,7 +136,8 @@ code {
 table {
     width: 100% !important;
     border-collapse: collapse !important;
-    font-family: Arial, sans-serif !important;
+    font-family: Figtree, sans-serif !important;
+    font-weight: 400 !important;
     background-color: var(--white) !important;
     border-radius: 8px !important;
     overflow: hidden;
@@ -147,7 +149,8 @@ table {
 th {
     background-color: var(--orange-light) !important;
     color: var(--white) !important;
-    font-weight: bold !important;
+    font-family: Figtree !important;
+    font-weight: 600 !important;
     font-size: 1rem !important;
     letter-spacing: 0.03em !important;
     text-transform: uppercase !important;
@@ -285,4 +288,16 @@ tbody tr:last-child td:last-child {
     font-style: normal; 
     line-height: 1; 
     letter-spacing: 0;
+}
+
+.sb-footer {
+    background-color: var(--orange);
+    color: var(--white);
+    text-align: center;
+    padding: 20px;
+    border-top: 2px solid var(--yellow);
+}
+.btn-period {
+    padding: 8px 15px;
+    border: 1px solid var(--orange) !important;
 }

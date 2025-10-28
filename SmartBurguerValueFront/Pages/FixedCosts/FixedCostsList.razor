@@ -11,6 +11,8 @@
 @inject IConfiguration Configuration
 @inject IToastService _toast
 
+<PageTitle>Custos fixos</PageTitle>
+
 <div class="p-2 p-md-4">
     <h4>Custos Fixos</h4>
 
@@ -49,7 +51,9 @@
 
                 <RadzenDataGridColumn TItem="FixedCostsDTO" Title="Data de vencimento">
                     <Template Context="cost">
+                        <div style="background-color:@(cost.DueDate < DateTime.Today && cost.IsPaid == false ? "#FF0000" : ""); padding: 5px;">
                         @(cost.DueDate.ToString("dd/MM/yyyy"))
+                        </div>
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="IngredientsDTO" Title="Status">

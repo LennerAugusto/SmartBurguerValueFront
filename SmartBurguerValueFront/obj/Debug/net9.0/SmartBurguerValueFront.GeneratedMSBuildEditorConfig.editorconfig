@@ -28,6 +28,14 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Filters/HeaderBtnFilter.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xGaWx0ZXJzXEhlYWRlckJ0bkZpbHRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Graphs/GraphBox.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xHcmFwaHNcR3JhcGhCb3gucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Modals/ProductsDetailModal.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNb2RhbHNcUHJvZHVjdHNEZXRhaWxNb2RhbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -172,6 +180,14 @@ build_metadata.AdditionalFiles.CssScope = b-5dgow92gxi
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tYm9zXENvbWJvc0RldGFpbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-cvfesziakr
 
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/PrivacyPolicy.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeVBvbGljeS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-89ho2c3yln
+
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/Products/ProductDetail.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZHVjdHNcUHJvZHVjdERldGFpbC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-c4r1ywktkx
+
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Pages/TermsOfUse.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVybXNPZlVzZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-68eaar90vx

@@ -17,14 +17,16 @@
 @inject IToastService _toast
 @inject NavigationManager _nav
 
+<PageTitle>Combos</PageTitle>
+
 <div class="p-2 p-md-4">
     <h4>Combos</h4>
-    <div class="row align-items-stretch mb-2 mb-md-3">
-        <div class="col-12 col-md-2 h-100">
+    <div class="row align-items-stretch mb-3 g-2 g-md-3">
+        <div class="col-12 col-md-2 d-flex flex-column">
             <div class="mb-3">
-                <select class="form-select"
+                <select class="form-select w-100"
                         @onchange="PeriodChanged"
-                        style="border: none; text-align:start">
+                        style="border: none; text-align:start;">
                     <option value="@EPeriod.LastWeek">7 dias</option>
                     <option value="@EPeriod.LastFourWeeks">30 dias</option>
                     <option value="@EPeriod.LastSemester">6 meses</option>
@@ -32,50 +34,49 @@
                     <option value="@EPeriod.SinceTheBeginning">Desde o início</option>
                 </select>
             </div>
+
             @if (MarginProfit != null && BestSellings.Any())
             {
-                <div class="d-flex flex-column justify-content-center flex-grow-1">
-                    <div class="container-graphs d-flex flex-column align-items-center w-100 mb-3 gap-3 gap-md-4 p-2 p-md-4">
-                        <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket">
-                        <span class="title-card-small">R$ @MarginProfit.Profit</span>
-                        <p class="descritpion-card-small">Lucro com combos</p>
+                <div class="d-flex flex-column gap-2 flex-grow-1">
+                    <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
+                        <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
+                        <span class="title-card-small mt-2">R$ @MarginProfit.Profit</span>
+                        <p class="descritpion-card-small mb-0">Lucro com combos</p>
                     </div>
-                    <div class="container-graphs d-flex flex-column align-items-center w-100 gap-3 gap-md-4 p-2 p-md-4">
-                        <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket">
-                        <span class="title-card-small">@MarginProfit.Margin %</span>
-                        <p class="descritpion-card-small">Margem de Lucro</p>
+
+                    <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
+                        <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
+                        <span class="title-card-small mt-2">@MarginProfit.Margin %</span>
+                        <p class="descritpion-card-small mb-0">Margem de Lucro</p>
                     </div>
                 </div>
             }
         </div>
-        <div class="col-12 col-md-5 h-100">
+        <div class="col-12 col-md-5 d-flex">
             @if (BestSellings != null && BestSellings.Any())
             {
-                <div class="container-graphs p-2 p-md-4">
-                <ApexChart TItem="BestSellingProductsByPeriodDTO"
-                           Title="Combos mais vendidos"
-                           @key="SelectedPeriod"
-                           Height="500">
-                    <ApexPointSeries TItem="BestSellingProductsByPeriodDTO"
-                                     Items="BestSellings"
-                                     SeriesType="@SeriesType.Area"
-                                     Name="Quantidade"
-                                     XValue="@(e => $"{e.Label} - {e.NameProduct}")"
-                                     YValue="@(e => e.Quantity)"
-                                     Color="#FF7C01" />
-                </ApexChart>
+                <div class="container-graphs w-100 p-3 d-flex flex-column justify-content-center">
+                    <ApexChart TItem="BestSellingProductsByPeriodDTO"
+                               Title="Combos mais vendidos"
+                               @key="SelectedPeriod">
+                        <ApexPointSeries TItem="BestSellingProductsByPeriodDTO"
+                                         Items="BestSellings"
+                                         SeriesType="@SeriesType.Area"
+                                         Name="Quantidade"
+                                         XValue="@(e => $"{e.Label} - {e.NameProduct}")"
+                                         YValue="@(e => e.Quantity)"
+                                         Color="#FF7C01" />
+                    </ApexChart>
                 </div>
             }
         </div>
-        <div class="col-12 col-md-4 h-100">
+        <div class="col-12 col-md-5 col-lg-4 d-flex">
             @if (BestMargins != null && BestMargins.Any())
             {
-                <div class="container-graphs p-2 p-md-4">
+                <div class="container-graphs w-100 p-3 d-flex flex-column justify-content-center">
                     <ApexChart TItem="GetBestMarginDTO"
                                Title="Produtos com melhores margem"
-                               Height="500"
                                Options="chartOptions">
-
                         <ApexPointSeries TItem="GetBestMarginDTO"
                                          Items="BestMargins"
                                          SeriesType="SeriesType.Donut"
@@ -88,6 +89,7 @@
             }
         </div>
     </div>
+
     <div class="mb-3 d-flex flex-row justify-content-between align-items-center gap-3 w-100">
         <InputTextFilterTabs Filter="@filterName" FilterChanged="OnFilterChanged" />
         <ButtonPrimary BackgroundColor="bg-orange" Text="Novo Produto" Url="/combos/cad" Icon="fas fa-plus icon-inside-input" />
@@ -179,9 +181,10 @@
         }
         chartOptions = new ApexChartOptions<GetBestMarginDTO>
         {
-            Colors = new List<string>{ "#FF6B1E","#FDCEA1","#FFEEE0","#333333", "#858585"},
-            Title = new Title{Align = Align.Center,},
-            Legend = new Legend{HorizontalAlign = Align.Center}
+            Colors = new List<string> { "#FF6B1E", "#FDCEA1", "#FFEEE0", "#333333", "#858585" },
+            Title = new Title { Align = Align.Center },
+            Legend = new Legend { HorizontalAlign = Align.Center },
+            Tooltip = new ApexCharts.Tooltip { Enabled = true, Y = new TooltipY { Formatter = "window.formatTooltip" } }
         };
     }
 

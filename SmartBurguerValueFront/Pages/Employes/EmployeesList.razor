@@ -13,6 +13,8 @@
 @inject IToastService _toast
 @inject NavigationManager _nav
 
+<PageTitle>Funcionários</PageTitle>
+
 <div class="p-2 p-md-4">
     <h4>Lista de Funcionários</h4>
 
@@ -56,7 +58,6 @@
                         R$ @string.Format("{0:N2}", employee.MonthlySalary)
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="EmployesDTO" Property="" Title="% do Markup" />
                 <RadzenDataGridColumn TItem="EmployesDTO" Title="Status">
                     <Template Context="employee">
                         @(employee.IsActive ? "Ativo" : "Inativo")

@@ -3,12 +3,8 @@
   "WorkspaceRootPath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\wwwroot\\css\\app.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\combos\\comboslist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\pages\\combos\\comboslist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\purchases\\purchaseslist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\pages\\purchases\\purchaseslist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\products\\productslist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -22,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 14,
+          "SelectedChildIndex": 15,
           "Children": [
             {
               "$type": "Bookmark",
@@ -82,41 +78,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "app.css",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\css\\app.css",
-              "RelativeDocumentMoniker": "SmartBurguerValueFront\\wwwroot\\css\\app.css",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\css\\app.css",
-              "RelativeToolTip": "SmartBurguerValueFront\\wwwroot\\css\\app.css",
-              "ViewState": "AgIAAAkBAAAAAAAAAADwvxoBAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-10-21T01:59:43.839Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "CombosList.razor",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Combos\\CombosList.razor",
-              "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\Combos\\CombosList.razor",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Combos\\CombosList.razor",
-              "RelativeToolTip": "SmartBurguerValueFront\\Pages\\Combos\\CombosList.razor",
-              "ViewState": "AgIAAKYAAAAAAAAAAAArwLgAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-21T01:48:18.715Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "ProductsList.razor",
               "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Products\\ProductsList.razor",
               "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\Products\\ProductsList.razor",
               "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Products\\ProductsList.razor",
               "RelativeToolTip": "SmartBurguerValueFront\\Pages\\Products\\ProductsList.razor",
-              "ViewState": "AgIAAJkAAAAAAAAAAAAQwK8AAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAANsAAAAAAAAAAAAAAAgBAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-21T00:53:45.874Z",
+              "WhenOpened": "2025-10-28T01:34:10.071Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PurchasesList.razor",
+              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Purchases\\PurchasesList.razor",
+              "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\Purchases\\PurchasesList.razor",
+              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Purchases\\PurchasesList.razor",
+              "RelativeToolTip": "SmartBurguerValueFront\\Pages\\Purchases\\PurchasesList.razor",
+              "ViewState": "AgIAANkAAAAAAAAAAAAswOMAAABbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-28T01:02:44.568Z",
               "EditorCaption": ""
             }
           ]

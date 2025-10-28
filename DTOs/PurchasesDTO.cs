@@ -20,6 +20,7 @@ namespace DTOs
         public string NameItem { get; set; }
         public Guid PurchaseId { get; set; }
         public Guid UnityOfMensureId { get; set; }
+        public string UnityOfMensureSymbol { get; set; }
         public Guid? InventoryItemId { get; set; }
         public Guid? IngredientId { get; set; }
         public decimal UnitPrice { get; set; }

@@ -1,9 +1,14 @@
 ﻿@page "/"
 @using ApexCharts
 @using Constants
+@using DTOs
 @using DTOs.Analysis
 @using Microsoft.AspNetCore.Components.Authorization
+@using SmartBurguerValueAPI.Constants
+@using SmartBurguerValueAPI.DTOs
+@using SmartBurguerValueAPI.DTOs.Analysis
 @using SmartBurguerValueFront.Components.Cards
+@using SmartBurguerValueFront.Components.Filters
 @using SmartBurguerValueRCL.Services.SmartBurguerValueRCL.Services
 @inject CustomAuthStateProvider AuthenticationStateProvider
 @inject IConfiguration Configuration
@@ -12,7 +17,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="p-2 p-md-4">
+ <div class="p-2 p-md-4">
     <h4 class="text-dark">Dashboard</h4>
     <p style="color:var(--grey-30)">Olá @userName, bem-vindo de volta!</p>
 
@@ -22,11 +27,11 @@
                 <select class="form-select"
                         @onchange="PeriodChanged"
                         style="border: none; text-align:start">
-                    <option value="@EPeriod.LastWeek">7 dias</option>
-                    <option value="@EPeriod.LastFourWeeks">30 dias</option>
-                    <option value="@EPeriod.LastSemester">6 meses</option>
-                    <option value="@EPeriod.LastYear">12 meses</option>
                     <option value="@EPeriod.SinceTheBeginning">Desde o início</option>
+                    <option value="@EPeriod.LastYear">12 meses</option>
+                    <option value="@EPeriod.LastSemester">6 meses</option>
+                    <option value="@EPeriod.LastFourWeeks">30 dias</option>
+                    <option value="@EPeriod.LastWeek">7 dias</option>
                 </select>
             </div>
             @if (analysisHomeDTO != null)
@@ -44,91 +49,151 @@
                 </div>
             }
             <div class="p-3 p-md-5 container-graphs">
-                @if (InvoicingSeries != null && InvoicingSeries.Any())
+                <div class="d-flex flex-row justify-content-center w-100">
+                    <HeaderBtnFilter CurrentPeriod="SelectedPeriodYear" PeriodChanged="OnPeriodYearsChanged" />
+                </div>
+                @if (InvoicingComparision != null && InvoicingComparision.Series.Any())
                 {
                     <div class="m-2 m-md-4">
-                        <ApexChart TItem="InvoicingSeriesDTO"
+                        <ApexChart TItem="ChartData"
                                    Title="Comparativo de Faturamento"
-                                   @key="SelectedPeriod"
                                    Height="400">
-                            <ApexPointSeries TItem="InvoicingSeriesDTO"
-                                             Items="InvoicingSeries"
-                                             SeriesType="@SeriesType.Area"
-                                             Name="Faturamento Bruto"
-                                             XValue="@(e => e.Label)"
-                                             YValue="@(e => e.Invoicing)"
-                                             Color="#FF7C01" />
 
-                            <ApexPointSeries TItem="InvoicingSeriesDTO"
-                                             Items="InvoicingSeries"
-                                             SeriesType="@SeriesType.Area"
-                                             Name="Faturamento Líquido"
-                                             XValue="@(e => e.Label)"
-                                             YValue="@(e => e.NetValue)"
-                                             Color="#333333" />
+                            @for (int i = 0; i < InvoicingComparision.Series.Count; i++)
+                            {
+                                var serie = InvoicingComparision.Series[i];
+                                var color = GetColorForSeries(i);
+
+                                <ApexPointSeries TItem="ChartData"
+                                                 Items="GetSeriesData(serie)"
+                                                 SeriesType="@SeriesType.Area"
+                                                 Name="@serie.Name"
+                                                 XValue="@(e => e.Month)"
+                                                 YValue="@(e => e.Value)"
+                                                 Color="@color" />
+                            }
+
                         </ApexChart>
                     </div>
                 }
             </div>
             <div class="p-3 p-md-5 mt-2 mt-md-4 container-graphs">
-                @if (InvoicingSeries != null && InvoicingSeries.Any())
+                <div class="d-flex flex-row justify-content-center w-100">
+                    <HeaderBtnFilter CurrentPeriod="SelectedPeriodYear" PeriodChanged="OnPeriodYearsChanged" />
+                </div>
+                @if (OrdersComparision != null && OrdersComparision.Series.Any())
                 {
                     <div class="m-2 m-md-4">
-                        <ApexChart TItem="TotalOrdersDTO"
-                                   Title="Total de pedidos"
-                                   @key="SelectedPeriod"
+                        <ApexChart TItem="ChartData"
+                                   Title="Comparativo de pedidos"
                                    Height="400"
-                                   Options="chartOptions">
+                        Options="chartOptions">
 
-                            <ApexPointSeries TItem="TotalOrdersDTO"
-                                             Items="TotalOrders"
-                                             Name="Total de pedidos"
-                                             XValue="@(e => e.Label)"
-                                             YAggregate="@(e => e.Sum(e => e.Orders))"
-                                             OrderByDescending="e=>e.Y"
-                                             SeriesType="SeriesType.Bar"
-                                             Color="#FF6B1E"/>
+                            @for (int i = 0; i < OrdersComparision.Series.Count; i++)
+                            {
+                                var serie = OrdersComparision.Series[i];
+                                var color = GetColorForSeries(i);
+
+                                <ApexPointSeries TItem="ChartData"
+                                                 Items="GetSeriesData(serie)"
+                                                 SeriesType="@SeriesType.Bar"
+                                                 Name="@serie.Name"
+                                                 XValue="@(e => e.Month)"
+                                                 YValue="@(e => e.Value)"
+                                                 Color="@color" />
+                            }
+
                         </ApexChart>
                     </div>
                 }
             </div>
         </div>
-        <div class="col-12 col-md-3">
-            <div class="d-none d-md-block mb-3">
+        <div class="col-12 col-md-3 pt-0 pt-md-3">
+            <div class="d-none d-md-block mt-2 mt-md-4 mb-2 mb-md-5">
                 <select class="form-select"
                         @onchange="PeriodChanged"
                         style="border: none; text-align:start">
-                    <option value="@EPeriod.LastWeek">7 dias</option>
-                    <option value="@EPeriod.LastFourWeeks">30 dias</option>
-                    <option value="@EPeriod.LastSemester">6 meses</option>
-                    <option value="@EPeriod.LastYear">12 meses</option>
                     <option value="@EPeriod.SinceTheBeginning">Desde o início</option>
+                    <option value="@EPeriod.LastYear">12 meses</option>
+                    <option value="@EPeriod.LastSemester">6 meses</option>
+                    <option value="@EPeriod.LastFourWeeks">30 dias</option>
+                    <option value="@EPeriod.LastWeek">7 dias</option>
                 </select>
             </div>
-            @if (BestSellingProducts != null && BestSellingProducts.Any())
-            {
-                <h4 class="text-dark text-center my-3">Mais Vendidos:</h4>
-                <div class="d-flex flex-column justify-content-center align-items-center">
-                    @foreach (var item in BestSellingProducts.Take(6))
-                    {
-                        <div class="my-4 col-12 col-lg-6">
-                            <CardProduct ItemHome="item" />
+            <div class="container-graphs mt-2 mt-md-5 p-3">
+                @if (SalesDistributions != null && SalesDistributions.Any())
+                {
+                    <ApexChart TItem="SalesDistributionDTO"
+                               Title="Distribuição de vendas" Options=chartOptionsDistribution
+                               Height="400" @key="SelectedPeriod">
+
+                        <ApexPointSeries TItem="SalesDistributionDTO"
+                                         Items="SalesDistributions"
+                                         Name="Gross Value"
+                                         SeriesType="SeriesType.Pie"
+                                         XValue="@(e => e.Name)"
+                                         YValue="@(e => e.Percentage)"
+                                         OrderByDescending="e=>e.Y"
+                                         ShowDataLabels />
+                    </ApexChart>
+                }
+                @if (CmvMarkupInvoicing != null)
+                {
+                    <div class="d-flex flex-column gap-2 flex-grow-1">
+                        <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
+                            <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
+                            <span class="title-card-small mt-2">@CmvMarkupInvoicing.Cmv %</span>
+                            <p class="descritpion-card-small mb-0">CMV</p>
                         </div>
-                    }
-                </div>
-            }
+
+                        <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
+                            <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
+                            <span class="title-card-small mt-2">@CmvMarkupInvoicing.Margin %</span>
+                            <p class="descritpion-card-small mb-0">Margem de Lucro</p>
+                        </div>
+                        <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
+                            <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
+                            <span class="title-card-small mt-2">@CmvMarkupInvoicing.Markup %</span>
+                            <p class="descritpion-card-small mb-0">Markup</p>
+                        </div>
+                        <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
+                            <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
+                            <span class="title-card-small mt-2">R$@CmvMarkupInvoicing.Profit</span>
+                            <p class="descritpion-card-small mb-0">Lucro</p>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-</div>
+ </div> 
 
 @code {
     private string? userName;
     private Guid? EnterpriseId;
-    private EPeriod SelectedPeriod { get; set; } = EPeriod.LastWeek;
-    private List<InvoicingSeriesDTO> InvoicingSeries { get; set; } = new();
     private List<TotalOrdersDTO> TotalOrders { get; set; } = new();
-    public List<BestSellingProductsDTO> BestSellingProducts { get; set; } = new();
+    private List<SalesDistributionDTO> SalesDistributions { get; set; } = new();
     public AnalysisHomeDTO analysisHomeDTO { get; set; } = new AnalysisHomeDTO();
+    public RevenueComparisonDTO InvoicingComparision { get; set; } = new RevenueComparisonDTO();
+    public RevenueComparisonDTO OrdersComparision { get; set; } = new RevenueComparisonDTO();
+    public GetCmvMarkupInvoicingDTO CmvMarkupInvoicing { get; set; } = new GetCmvMarkupInvoicingDTO();
+    PeriodYears SelectedPeriodYear = PeriodYears.OneYear;
+    private EPeriod SelectedPeriod { get; set; } = EPeriod.LastWeek;
+    private ApexChartOptions<SalesDistributionDTO> chartOptionsDistribution = new();
+
+    private List<string> months = new()
+    {
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    };
+
+    private string[] seriesColors = new[]
+    {
+        "#FF6B1E",
+        "#333333",
+        "#FDCEA1",
+        "#FFD901",
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -145,6 +210,7 @@
             {
                 EnterpriseId = id;
                 await LoadInitialized();
+                await LoadYearsInitialized();
                 StateHasChanged();
             };
         }
@@ -152,19 +218,33 @@
         {
             EnterpriseId = await AuthenticationStateProvider.GetEnterpriseId();
         }
-
         await LoadInitialized();
+        await LoadYearsInitialized();
+        chartOptionsDistribution = new ApexChartOptions<SalesDistributionDTO>
+        {
+            Colors = new List<string> { "#FF6B1E", "#FDCEA1", "#FFEEE0", "#333333", "#858585" },
+            Title = new Title { Align = Align.Center },
+            Legend = new Legend { HorizontalAlign = Align.Center },
+        };
     }
 
     private async Task PeriodChanged(ChangeEventArgs e)
     {
         if (Enum.TryParse<EPeriod>(e.Value?.ToString(), out var period))
         {
-            InvoicingSeries.Clear();
+            SalesDistributions.Clear();
             SelectedPeriod = period;
             await LoadInitialized();
             StateHasChanged();
         }
+    }
+
+    private async Task OnPeriodYearsChanged(PeriodYears period)
+    {
+        InvoicingComparision = new RevenueComparisonDTO();
+        OrdersComparision = new RevenueComparisonDTO();
+        SelectedPeriodYear = period;
+        await LoadYearsInitialized();
     }
 
     public async Task LoadInitialized()
@@ -178,26 +258,22 @@
         };
 
         var baseUrl = Configuration["UrlApi"];
-        var endpoint = $"{baseUrl}analysis/best-selling-products/by-enterprise-id";
         var endpointAnalysis = $"{baseUrl}analysis/analysis-home/get-all";
-        var endpointInvoicing = $"{baseUrl}analysis/invoicing/by-enterprise-id";
-        var endpointTotalOrders = $"{baseUrl}analysis/total-orders/by-enterprise-id";
+        var endpointSalesDistribution = $"{baseUrl}analysis/sales-distribution/by-enterprise-id";
+        var endpointanalysisCard = $"{baseUrl}analysis/markup-cmv-/by-enterprise-id";
         try
         {
-            var response = await Http.PostAsJsonAsync(endpoint, analysisDto);
             var responseAnalysis = await Http.PostAsJsonAsync(endpointAnalysis, analysisDto);
-            var responseInvoicing = await Http.PostAsJsonAsync(endpointInvoicing, analysisDto);
-            var responseTotalOrders = await Http.PostAsJsonAsync(endpointTotalOrders, analysisDto);
-            if (response.IsSuccessStatusCode && responseAnalysis.IsSuccessStatusCode && responseInvoicing.IsSuccessStatusCode)
+            var responseDistribution = await Http.PostAsJsonAsync(endpointSalesDistribution, analysisDto);
+            var responseCard = await Http.PostAsJsonAsync(endpointanalysisCard, analysisDto);
+            if (responseAnalysis.IsSuccessStatusCode && responseDistribution.IsSuccessStatusCode && responseCard.IsSuccessStatusCode)
             {
-                BestSellingProducts = await response.Content
-                    .ReadFromJsonAsync<List<BestSellingProductsDTO>>() ?? new();
                 analysisHomeDTO = await responseAnalysis.Content
                     .ReadFromJsonAsync<AnalysisHomeDTO>() ?? new();
-                InvoicingSeries = await responseInvoicing.Content
-                    .ReadFromJsonAsync<List<InvoicingSeriesDTO>>() ?? new();
-                TotalOrders = await responseTotalOrders.Content
-                    .ReadFromJsonAsync<List<TotalOrdersDTO>>() ?? new();
+                SalesDistributions = await responseDistribution.Content
+                    .ReadFromJsonAsync<List<SalesDistributionDTO>>() ?? new();
+                CmvMarkupInvoicing = await responseCard.Content
+                    .ReadFromJsonAsync<GetCmvMarkupInvoicingDTO>() ?? new();
             }
             else
             {
@@ -209,7 +285,76 @@
             Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
         }
     }
-    ApexChartOptions<TotalOrdersDTO> chartOptions = new()
+
+    public async Task LoadYearsInitialized()
+    {
+        if (!EnterpriseId.HasValue) return;
+
+        var analysisComparisionDto = new RequestAnalisysYearsDTO
+        {
+            EnterpriseId = EnterpriseId.Value,
+            PeriodYear = SelectedPeriodYear
+        };
+
+        var baseUrl = Configuration["UrlApi"];
+        var endpoint = $"{baseUrl}analysis-year/analysis-invoicing/by-enterprise-id";
+        var endpointOrders = $"{baseUrl}analysis-year/analysis-orders/by-enterprise-id";
+        try
+        {
+            var response = await Http.PostAsJsonAsync(endpoint, analysisComparisionDto);
+            var responseOrders = await Http.PostAsJsonAsync(endpointOrders, analysisComparisionDto);
+            if (response.IsSuccessStatusCode && response.IsSuccessStatusCode)
+            {
+                InvoicingComparision = await response.Content
+                    .ReadFromJsonAsync<RevenueComparisonDTO>() ?? new();
+                OrdersComparision = await responseOrders.Content
+                    .ReadFromJsonAsync<RevenueComparisonDTO>() ?? new();
+                StateHasChanged();
+            }
+            else
+            {
+                Console.Error.WriteLine("Erro ao buscar dados da API.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao buscar dados da API: {ex.Message}");
+        }
+    }
+
+    private List<ChartData> GetSeriesData(RevenueSeriesDTO serie)
+    {
+        var seriesData = new List<ChartData>();
+
+        for (int i = 0; i < months.Count; i++)
+        {
+            var value = i < serie.Number.Count ? serie.Number[i] : 0;
+            seriesData.Add(new ChartData
+            {
+                Month = months[i],
+                Value = value
+            });
+        }
+
+        return seriesData;
+    }
+
+    private string GetColorForSeries(int seriesIndex)
+    {
+        return seriesColors[seriesIndex % seriesColors.Length];
+    }
+    private ApexChartOptions<SalesDistributionDTO> options { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        options.DataLabels = new DataLabels
+        {
+            Formatter = @"function(value, { seriesIndex, w }) {
+            return w.config.series[seriesIndex];}"
+        };
+
+    }
+    ApexChartOptions<ChartData> chartOptions = new()
     {
         PlotOptions = new PlotOptions
         {
@@ -217,9 +362,10 @@
             {
                 BorderRadius = 12,
                 BorderRadiusApplication = BorderRadiusApplication.End,
-                ColumnWidth = "45%"
+                ColumnWidth = "100%"
             }
         },
         DataLabels = new DataLabels { Enabled = false }
     };
+    
 }

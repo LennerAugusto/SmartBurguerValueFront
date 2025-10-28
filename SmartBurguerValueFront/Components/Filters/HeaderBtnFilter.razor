@@ -1,0 +1,40 @@
+﻿@using SmartBurguerValueAPI.Constants
+@using SmartBurguerValueRCL.Helpers
+
+@foreach (var item in listITem)
+{
+    <button style=" color: #909090" class="m-3 btn @(item == CurrentPeriod ? "btn btn-period" : "btn")"
+            @onclick='() => SetActiveButton(item)'>
+        @item.GetDescription()
+    </button>
+
+}
+
+@code {
+    [Parameter]
+    public PeriodYears CurrentPeriod { get; set; }
+
+    [Parameter]
+    public EventCallback<PeriodYears> PeriodChanged { get; set; }
+
+    private List<PeriodYears> listITem;
+
+    protected override void OnInitialized()
+    {
+        listITem = new List<PeriodYears>
+        {
+            PeriodYears.OneYear,
+            PeriodYears.TwoYears,
+            PeriodYears.ThreeYears,
+            PeriodYears.FourYears,
+            
+        };
+        base.OnInitialized();
+    }
+
+    private async Task SetActiveButton(PeriodYears _ePeriod)
+    {
+        CurrentPeriod = _ePeriod;
+        await PeriodChanged.InvokeAsync(_ePeriod);
+    }
+}
