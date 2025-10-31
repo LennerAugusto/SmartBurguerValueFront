@@ -1,4 +1,5 @@
 ﻿@page "/compras"
+@using ApexCharts
 @using Blazored.Toast.Services
 @using Constants
 @using DTOs
@@ -20,7 +21,7 @@
 <PageTitle>Compras</PageTitle>
 <div class="p-2 p-md-4">
     <h4>Compras de produtos e insumos</h4>
-     <div class="row align-items-stretch mb-3 g-2 g-md-3">
+    <div class="row align-items-stretch mb-3 g-2 g-md-3">
         <div class="col-12 col-md-2 d-flex flex-column">
             <div class="mb-3">
                 <select class="form-select w-100"
@@ -51,23 +52,44 @@
                 </div>
             }
         </div>
-        <div class="col-12 col-md-5 d-flex">
-           
-        </div>
+        <div class="col-12 col-md-7 d-flex">
+             @if (TotalSpend != null && TotalSpend.Any())
+                {
+                    <div class="w-100">
+                    <ApexChart TItem="GetTotalSpendDTO"
+                               Title="Total gasto em compras"
+                               @key="SelectedPeriod"
+                               Height="400"
+                               Options="chartOptions">
 
-        <div class="col-12 col-md-5 col-lg-4 d-flex">
+                        <ApexPointSeries TItem="GetTotalSpendDTO"
+                                         Items="TotalSpend"
+                                         Name="Valor"
+                                         XValue="@(e => e.Label)"
+                                         YAggregate="@(e => e.Sum(e => e.Orders))"
+                                         OrderByDescending="e=>e.Y"
+                                         SeriesType="SeriesType.Line"
+                                         Color="#FF6B1E" />
+                    </ApexChart>
+                    </div>
+                }
+
+        </div>
+        <div class="col-12 col-md-3 d-flex">
             @if (DetailPurchases != null)
             {
-                var count = 1; 
+                var count = 1;
                 <div class="d-flex flex-column gap-2 flex-grow-1">
                     <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
                         <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
-                        @foreach(var item in DetailPurchases.TopSuppliers)
-                        {
-                            <span class="title-card-small mt-2">@count º - @item</span>
-                            count++;
-                        }
-                        <p class="descritpion-card-small mb-0">Top Fornecedores</p>
+                        <span class="title-card-small mt-2">Top Fornecedores</span>
+                        <div class="text-start mt-1 mt-md-2">
+                            @foreach (var item in DetailPurchases.TopSuppliers)
+                            {
+                                <p class="descritpion-card-small mb-0 mt-1">@count º - @item</p>
+                                count++;
+                            }
+                        </div>
                     </div>
                 </div>
             }
@@ -126,6 +148,7 @@
 </div>
 @code {
     private List<PurchasesDTO> Purchases = new();
+    private List<GetTotalSpendDTO> TotalSpend = new();
     private GetPurchaseDetailsDTO? DetailPurchases { get; set; }
     public Guid? EnterpriseId { get; set; }
     private string filterName = "";
@@ -213,6 +236,7 @@
         if (Enum.TryParse<EPeriod>(e.Value?.ToString(), out var period))
         {
             SelectedPeriod = period;
+            TotalSpend.Clear();
             await GetDataGraphs();
             StateHasChanged();
         }
@@ -226,11 +250,27 @@
         };
         var baseUrl = Configuration["UrlApi"];
         var endpointProductsDetails = $"{baseUrl}analysis/purchase-details/by-enterprise-id";
+        var endpointTotalSpend = $"{baseUrl}analysis/purchase-expanse/by-enterprise-id";
         var responseProductsDetails = await Http.PostAsJsonAsync(endpointProductsDetails, analysisDto);
-        if (responseProductsDetails.IsSuccessStatusCode && responseProductsDetails.IsSuccessStatusCode)
+        var responseTotalSpend = await Http.PostAsJsonAsync(endpointTotalSpend, analysisDto);
+        if (responseProductsDetails.IsSuccessStatusCode && responseTotalSpend.IsSuccessStatusCode)
         {
             DetailPurchases = await responseProductsDetails.Content
                 .ReadFromJsonAsync<GetPurchaseDetailsDTO>();
+            TotalSpend = await responseTotalSpend.Content
+                .ReadFromJsonAsync<List<GetTotalSpendDTO>>() ?? new();
         }
     }
+    ApexChartOptions<GetTotalSpendDTO> chartOptions = new()
+    {
+        PlotOptions = new PlotOptions
+        {
+            Bar = new PlotOptionsBar
+            {
+                BorderRadiusApplication = BorderRadiusApplication.End,
+            }
+        },
+        DataLabels = new DataLabels { Enabled = false }
+    };
+
 }

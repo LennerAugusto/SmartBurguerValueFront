@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartBurguerValueFront")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+097933454e151ff5f62647cf0bfd31e76b204a98")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b5e19f5a64efcee438d70925954541407334399")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartBurguerValueFront")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartBurguerValueFront")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

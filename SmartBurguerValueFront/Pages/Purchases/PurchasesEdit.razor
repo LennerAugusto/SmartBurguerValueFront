@@ -40,7 +40,10 @@
         <div class="row mb-3">
             <div class="col-12 col-md-4">
                 <RadzenFormField Text="Ingrediente" Style="width: 100%">
-                    <RadzenDropDown @bind-Value="SelectedIngredientId"
+                    <RadzenDropDown
+                                    TValue="Guid"
+                                    ValueChanged="@OnIngredientChanged"
+                                     ValueExpression="@(() => SelectedIngredientId)"
                                     TValue="Guid"
                                     Data="@Ingredients"
                                     TextProperty="Name"
@@ -53,11 +56,14 @@
             </div>
             <div class="col-12 col-md-4">
                 <RadzenFormField Text="Quantidade" Style="width: 100%">
-                    <RadzenNumeric TValue="decimal" @bind-Value="NewItem.Quantity" />
+                    <RadzenNumeric TValue="decimal" @bind-Value="NewItem.Quantity" Style="border: none; outline: none; flex: 1;" />
+                    <span style="white-space: nowrap; color: #666; font-size: 14px; padding-left: 6px;">
+                        @((UnitTypeSelected?.Symbol) ?? "")
+                    </span>
                 </RadzenFormField>
             </div>
             <div class="col-12 col-md-4">
-                <RadzenFormField Text="Preço Unitário (R$)" Style="width: 100%">
+                <RadzenFormField Text="Valor (R$)" Style="width: 100%">
                     <RadzenNumeric TValue="decimal" @bind-Value="NewItem.UnitPrice" />
                 </RadzenFormField>
             </div>
@@ -96,7 +102,7 @@
     public Guid? EnterpriseId { get; set; }
     private RadzenDataGrid<PurchaseItemsDTO> dataGrid;
     public List<IngredientsDTO> Ingredients { get; set; } = new();
-
+    public UnitTypesDTO UnitTypeSelected { get; set; }
     public Guid SelectedIngredientId { get; set; }
 
 
@@ -163,7 +169,22 @@
         if (dataGrid != null)
             await dataGrid.Reload();
     }
-
+    private async Task OnIngredientChanged(Guid value)
+    {
+        Guid unityTypeId = Guid.Empty;
+        SelectedIngredientId = value;
+        foreach (var ingredient in Ingredients)
+        {
+            if (ingredient.Id == SelectedIngredientId)
+            {
+                unityTypeId = ingredient.UnitOfMeasureId;
+                break;
+            }
+        }
+        var baseUrl = Configuration["UrlApi"];
+        UnitTypeSelected = await Http.GetFromJsonAsync<UnitTypesDTO>($"{baseUrl}unit-types/get-by-id?unityTypeId={unityTypeId}") ?? new();
+        StateHasChanged();
+    }
     private void RemoveItem(PurchaseItemsDTO item)
     {
         Purchase.Items.Remove(item);
