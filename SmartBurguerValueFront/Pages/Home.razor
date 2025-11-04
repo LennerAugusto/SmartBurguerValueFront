@@ -9,6 +9,7 @@
 @using SmartBurguerValueAPI.DTOs.Analysis
 @using SmartBurguerValueFront.Components.Cards
 @using SmartBurguerValueFront.Components.Filters
+@using SmartBurguerValueFront.Components.Sections
 @using SmartBurguerValueRCL.Services.SmartBurguerValueRCL.Services
 @inject CustomAuthStateProvider AuthenticationStateProvider
 @inject IConfiguration Configuration
@@ -137,6 +138,10 @@
                                          ShowDataLabels />
                     </ApexChart>
                 }
+                else
+                {
+                    <SectionWarningNoData/>
+                }
                 @if (CmvMarkupInvoicing != null)
                 {
                     <div class="d-flex flex-column gap-2 flex-grow-1">
@@ -178,7 +183,7 @@
     public RevenueComparisonDTO OrdersComparision { get; set; } = new RevenueComparisonDTO();
     public GetCmvMarkupInvoicingDTO CmvMarkupInvoicing { get; set; } = new GetCmvMarkupInvoicingDTO();
     PeriodYears SelectedPeriodYear = PeriodYears.OneYear;
-    private EPeriod SelectedPeriod { get; set; } = EPeriod.LastWeek;
+    private EPeriod SelectedPeriod { get; set; } = EPeriod.SinceTheBeginning;
     private ApexChartOptions<SalesDistributionDTO> chartOptionsDistribution = new();
 
     private List<string> months = new()

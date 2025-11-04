@@ -9,6 +9,7 @@
 @using Radzen.Blazor
 @using SmartBurguerValueFront.Components.Inputs
 @using SmartBurguerValueFront.Components.Modals
+@using SmartBurguerValueFront.Components.Sections
 @using SmartBurguerValueFront.Components.buttons
 @inject HttpClient Http
 @inject DialogService DialogService
@@ -71,11 +72,11 @@
             }
         </div>
         <div class="col-12 col-md-5 col-lg-4 d-flex">
+            <div class="container-graphs w-100 p-3 d-flex flex-column justify-content-center">
             @if (BestMargins != null && BestMargins.Any())
             {
-                <div class="container-graphs w-100 p-3 d-flex flex-column justify-content-center">
                     <ApexChart TItem="GetBestMarginDTO"
-                               Title="Produtos com melhores margem"
+                               Title="Combos com melhores margem"
                                Options="chartOptions">
                         <ApexPointSeries TItem="GetBestMarginDTO"
                                          Items="BestMargins"
@@ -85,8 +86,12 @@
                                          YValue="e => e.Margin"
                                          OrderByDescending="e=>e.Y" />
                     </ApexChart>
-                </div>
-            }
+                }
+                else
+                {
+                    <SectionWarningNoData/>
+                }
+            </div>
         </div>
     </div>
 

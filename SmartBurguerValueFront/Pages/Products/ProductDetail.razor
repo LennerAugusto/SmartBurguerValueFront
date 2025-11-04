@@ -9,7 +9,7 @@
 @inject DialogService DialogService
 @inject IConfiguration Configuration
 @inject CustomAuthStateProvider _auth
-
+@inject NavigationManager _nav
 
 <div class="container-primary">
     <div class="row">
@@ -41,7 +41,7 @@
                             <div class="d-flex flex-column justify-content-center gap-3">
                                 <h3 class="title-product text-orange">R$ @Product.SellingPrice</h3>
                                 <CardIngredientsProductDetail Product="@Product" />
-                                <ButtonPrimary Text="Editar Produto" BackgroundColor="bg-orange" Icon="fas fa-edit" Class="text-center" />
+                                <ButtonPrimary Text="Editar Produto" BackgroundColor="bg-orange" Icon="fas fa-edit" Class="text-center" OnClick="NavToProduct"/>
                             </div>
                         </div>
                     </div>
@@ -103,5 +103,9 @@
                 isLoading = false;
             }
         StateHasChanged();
+    }
+    public void NavToProduct()
+    {
+        _nav.NavigateTo($"/produtos/edit/{Id}");
     }
 }

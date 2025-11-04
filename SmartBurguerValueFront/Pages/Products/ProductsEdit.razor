@@ -84,14 +84,14 @@
                 {
                     <RadzenFormField Text="selecione o ingrediente" Style="width: 100%;">
                         <RadzenDropDown Value="@SelectedIngredientId"
-                        ValueChanged="@OnIngredientChanged"
-                        ValueExpression="@(() => SelectedIngredientId)"
-                        TValue="Guid"
-                        Data="@Ingredients"
-                        TextProperty="Name"
-                        ValueProperty="Id"
-                        Placeholder="Selecione o ingrediente"
-                        Style="width: 100%;" />
+                                        ValueChanged="@OnIngredientChanged"
+                                        ValueExpression="@(() => SelectedIngredientId)"
+                                        TValue="Guid"
+                                        Data="@Ingredients"
+                                        TextProperty="Name"
+                                        ValueProperty="Id"
+                                        Placeholder="Selecione o ingrediente"
+                                        Style="width: 100%;" />
                     </RadzenFormField>
                 }
             </div>
@@ -99,9 +99,9 @@
                 <RadzenFormField Text="Quantidade utilizada">
                     <div style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 4px; padding: 2px 4px; width: 200px;">
                         <RadzenNumeric TValue="decimal"
-                        @bind-Value="NewIngredientQuantity"
-                        Placeholder="0"
-                        Style="border: none; outline: none; flex: 1;" />
+                                       @bind-Value="NewIngredientQuantity"
+                                       Placeholder="0"
+                                       Style="border: none; outline: none; flex: 1;" />
                         <span style="white-space: nowrap; color: #666; font-size: 14px; padding-left: 6px;">
                             @((UnitTypeSelected?.BaseUnit) ?? "")
                         </span>
@@ -163,18 +163,18 @@
         if (Id != null)
         {
             var result = await Http.GetFromJsonAsync<ProductsDTO>($"{baseUrl}products/get-by-id/with-ingredients?ProductId={Id}");
-            if (result != null) 
-            Product = result;
+            if (result != null)
+                Product = result;
             selectedProductType = result.ProductType ?? "";
         }
         else
         {
             Product = new ProductsDTO
-                {
-                    Id = Guid.NewGuid(),
-                    EnterpriseId = EnterpriseId.Value,
-                    Ingredients = new List<IngredientsDTO>()
-                };
+            {
+                Id = Guid.NewGuid(),
+                EnterpriseId = EnterpriseId.Value,
+                Ingredients = new List<IngredientsDTO>()
+            };
         }
     }
     private async Task OnIngredientChanged(Guid value)
@@ -211,11 +211,11 @@
 
         var newList = Product.Ingredients.ToList();
         newList.Add(new IngredientsDTO
-            {
-                Id = ingredient.Id,
-                Name = ingredient.Name,
-                Quantity = NewIngredientQuantity
-            });
+        {
+            Id = ingredient.Id,
+            Name = ingredient.Name,
+            Quantity = NewIngredientQuantity
+        });
 
         Product.Ingredients = newList;
 
@@ -247,23 +247,23 @@
         try
         {
             ProductRequestDTO = new ProductCreateDTO
+            {
+                Id = Product.Id,
+                Name = Product.Name,
+                Description = Product.Description,
+                SellingPrice = Product.SellingPrice,
+                DesiredMargin = Product.DesiredMargin,
+                ImageUrl = Product.ImageUrl,
+                ProductType = selectedProductType ?? "",
+                IsActive = Product.IsActive,
+                Ingredients = Product.Ingredients.Select(i => new IngredientCreateProductDTO
                 {
-                    Id = Product.Id,
-                    Name = Product.Name,
-                    Description = Product.Description,
-                    SellingPrice = Product.SellingPrice,
-                    DesiredMargin = Product.DesiredMargin,
-                    ImageUrl = Product.ImageUrl,
-                    ProductType = selectedProductType ?? "",
-                    IsActive = Product.IsActive,
-                    Ingredients = Product.Ingredients.Select(i => new IngredientCreateProductDTO
-                    {
-                        Id = i.Id,
-                        Quantity = i.Quantity,
-                        Name = i.Name
-                    }).ToList(),
-                    EnterpriseId = EnterpriseId
-                };
+                    Id = i.Id,
+                    Quantity = i.Quantity,
+                    Name = i.Name
+                }).ToList(),
+                EnterpriseId = EnterpriseId
+            };
             var baseUrl = Configuration["UrlApi"];
             var endpoint = Id == null
                 ? $"{baseUrl}products/create"
@@ -280,9 +280,15 @@
             }
             else
             {
-                var msg = await response.Content.ReadAsStringAsync();
-                _toast.ShowError($"Erro ao salvar produto: {msg}");
+                if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                { _toast.ShowError($"Não tem nenhuma compra registrada para algum ingrediente selecionado, oque impossibilita os cálculos"); }
+                else
+                {
+                    var msg = await response.Content.ReadAsStringAsync();
+                    _toast.ShowError($"Erro ao salvar produto: {msg}");
+                }
             }
+
         }
         catch (Exception ex)
         {

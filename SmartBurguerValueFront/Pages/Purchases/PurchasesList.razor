@@ -10,6 +10,7 @@
 @using SmartBurguerValueAPI.DTOs.Analysis
 @using SmartBurguerValueFront.Components.Inputs
 @using SmartBurguerValueFront.Components.Modals
+@using SmartBurguerValueFront.Components.Sections
 @using SmartBurguerValueFront.Components.buttons
 @inject HttpClient Http
 @inject DialogService DialogService
@@ -53,9 +54,9 @@
             }
         </div>
         <div class="col-12 col-md-7 d-flex">
-             @if (TotalSpend != null && TotalSpend.Any())
-                {
-                    <div class="w-100">
+            @if (TotalSpend != null && TotalSpend.Any())
+            {
+                <div class="w-100">
                     <ApexChart TItem="GetTotalSpendDTO"
                                Title="Total gasto em compras"
                                @key="SelectedPeriod"
@@ -71,16 +72,16 @@
                                          SeriesType="SeriesType.Line"
                                          Color="#FF6B1E" />
                     </ApexChart>
-                    </div>
-                }
+                </div>
+            }
 
         </div>
         <div class="col-12 col-md-3 d-flex">
-            @if (DetailPurchases != null)
-            {
-                var count = 1;
-                <div class="d-flex flex-column gap-2 flex-grow-1">
-                    <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
+            <div class="d-flex flex-column gap-2 flex-grow-1">
+                <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
+                    @if (DetailPurchases != null)
+                    {
+                        var count = 1;
                         <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
                         <span class="title-card-small mt-2">Top Fornecedores</span>
                         <div class="text-start mt-1 mt-md-2">
@@ -90,9 +91,13 @@
                                 count++;
                             }
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <SectionWarningNoData/>
+                    }
                 </div>
-            }
+            </div>
         </div>
     </div>
 

@@ -9,6 +9,7 @@
 @inject DialogService DialogService
 @inject IConfiguration Configuration
 @inject CustomAuthStateProvider _auth
+@inject NavigationManager _nav
 
 <div class="container-primary">
     <div class="row">
@@ -40,7 +41,7 @@
                             <div class="d-flex flex-column justify-content-center gap-3">
                                 <h3 class="title-product text-orange">R$ @Combo.SellingPrice</h3>
                                 <CardIngredientsProductDetail ListProducts="@Combo.Products" />
-                                <ButtonPrimary Text="Editar Combo" BackgroundColor="bg-orange" Icon="fas fa-edit" Class="text-center" />
+                                <ButtonPrimary Text="Editar Combo" BackgroundColor="bg-orange" Icon="fas fa-edit" Class="text-center" OnClick="NavToCombo"/>
                             </div>
                         </div>
                     </div>
@@ -102,5 +103,9 @@
             isLoading = false;
         }
         StateHasChanged();
+    }
+    public void NavToCombo()
+    {
+        _nav.NavigateTo($"/combos/edit/{Id}");
     }
 }
