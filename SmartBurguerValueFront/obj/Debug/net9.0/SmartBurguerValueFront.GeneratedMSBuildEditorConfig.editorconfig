@@ -44,6 +44,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNb2RhbHNcUHVyY2hhc2VEZXRhaWxzTW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Sections/SectionCardsAnalysisHome.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWN0aW9uc1xTZWN0aW9uQ2FyZHNBbmFseXNpc0hvbWUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Workspace/PersonalProjects/SmartBurguerValueFront/SmartBurguerValueFront/SmartBurguerValueFront/Components/Sections/SectionSelectEnterpriseId.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWN0aW9uc1xTZWN0aW9uU2VsZWN0RW50ZXJwcmlzZUlkLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 

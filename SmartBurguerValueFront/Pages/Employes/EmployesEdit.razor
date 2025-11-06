@@ -3,6 +3,7 @@
 @using Blazored.Toast.Services
 @using DTOs
 @using Radzen.Blazor
+@using SmartBurguerValueAPI.DTOs
 @using SmartBurguerValueFront.Components.Inputs
 @using SmartBurguerValueFront.Components.buttons
 @inject NavigationManager _nav
@@ -93,13 +94,9 @@
 
     public EmployesDTO Employee { get; set; } = new();
     public Guid? EnterpriseId { get; set; }
-    public List<string> ContractTypes { get; set; } = new()
-    {
-        "Mensal",
-        "Diário"
-    };
-
+    public List<string> ContractTypes { get; set; } = new() {"Mensal", "Diário"};
     private List<WorkScheduleInput> WorkScheduleInputs { get; set; } = new();
+    private List<WeekDaysCountDTO> WeekDaysCount { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,11 +106,14 @@
             : new EmployesDTO();
 
         InicializarWorkSchedules();
+
+        var endpoint = $"{Configuration["UrlApi"]}employee/quantity-week-days/get-all";
+        WeekDaysCount = await Http.GetFromJsonAsync<List<WeekDaysCountDTO>>(endpoint) ??new();
     }
 
     private void InicializarWorkSchedules()
     {
-        var dias = new[] { "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado-Feira", "Domingo" };
+        var dias = new[] { "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo" };
 
         WorkScheduleInputs = dias.Select(day =>
         {
@@ -159,16 +159,23 @@
         {
             Employee.EmploymentType = "Daily";
             Employee.WorkSchedules = WorkScheduleInputs
-           .Where(x => x.Selected)
-           .Select(x => new WorkSchedulesDTO
-               {
-                   Weekday = x.Day,
-                   DailyRate = x.Value
-               }).ToList();
+         .Where(x => x.Selected)
+         .Select(x => new WorkSchedulesDTO
+         {
+             Weekday = x.Day,
+             DailyRate = x.Value
+         })
+         .ToList();
             var value = Employee.WorkSchedules
             .Where(ws => ws.DailyRate.HasValue)
-            .Sum(ws => ws.DailyRate.Value * 4); 
+            .Sum(ws =>
+            {
+                var dayCount = WeekDaysCount
+                    .FirstOrDefault(d => string.Equals(d.NameDay, ws.Weekday.ToString(), StringComparison.OrdinalIgnoreCase));
 
+                int occurrences = dayCount?.Quantity ?? 0;
+                return ws.DailyRate.Value * occurrences;
+            });
             Employee.MonthlySalary = value;
             Console.WriteLine(value);
         }
@@ -191,7 +198,6 @@
         }
     }
 
-    // Classe auxiliar para a UI
     public class WorkScheduleInput
     {
         public string Day { get; set; }

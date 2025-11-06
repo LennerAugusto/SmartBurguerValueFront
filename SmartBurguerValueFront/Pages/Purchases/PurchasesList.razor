@@ -159,7 +159,7 @@
     private string filterName = "";
     private bool isLoading = true;
     private bool loadError = false;
-    private EPeriod SelectedPeriod { get; set; }
+    private EPeriod SelectedPeriod { get; set; } = EPeriod.LastWeek;
     protected override async Task OnInitializedAsync()
     {
         try

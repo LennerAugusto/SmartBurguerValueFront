@@ -144,29 +144,7 @@
                 }
                 @if (CmvMarkupInvoicing != null)
                 {
-                    <div class="d-flex flex-column gap-2 flex-grow-1">
-                        <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
-                            <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
-                            <span class="title-card-small mt-2">@CmvMarkupInvoicing.Cmv %</span>
-                            <p class="descritpion-card-small mb-0">CMV</p>
-                        </div>
-
-                        <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
-                            <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
-                            <span class="title-card-small mt-2">@CmvMarkupInvoicing.Margin %</span>
-                            <p class="descritpion-card-small mb-0">Margem de Lucro</p>
-                        </div>
-                        <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
-                            <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
-                            <span class="title-card-small mt-2">@CmvMarkupInvoicing.Markup %</span>
-                            <p class="descritpion-card-small mb-0">Markup</p>
-                        </div>
-                        <div class="container-graphs d-flex flex-column align-items-center justify-content-center text-center w-100 p-3 flex-grow-1">
-                            <img src="/img/icons/IconTicket.png" loading="lazy" alt="icone-ticket" style="width:35px;">
-                            <span class="title-card-small mt-2">R$@CmvMarkupInvoicing.Profit</span>
-                            <p class="descritpion-card-small mb-0">Lucro</p>
-                        </div>
-                    </div>
+                   <SectionCardsAnalysisHome CmvMarkupInvoicing="@CmvMarkupInvoicing"/>
                 }
             </div>
         </div>
