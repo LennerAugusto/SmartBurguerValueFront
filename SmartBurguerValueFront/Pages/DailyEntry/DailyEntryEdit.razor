@@ -221,22 +221,23 @@
 
         try
         {
+            var totalCost = DailyEntry.Items.Sum(i => i.TotalCPV ?? 0);
+            var totalRevenue = DailyEntry.Items.Sum(i => i.TotalRevenue ?? 0);
+            var totalLiquid = totalRevenue - totalCost;
 
-            var totalCost = DailyEntry.Items.Sum(i => i.TotalCPV);
-            var revenue = DailyEntry.Items.Sum(i => i.TotalRevenue);
-            var liquid = revenue - totalCost;
-            var entryId = DailyEntry.Id != Guid.Empty ? DailyEntry.Id : Guid.NewGuid();
+            var isNew = DailyEntry.Id == Guid.Empty;
+            var entryId = isNew ? Guid.NewGuid() : DailyEntry.Id;
 
-            var Entry = new DailyEntryDTO
+            var entry = new DailyEntryDTO
             {
                 Id = entryId,
-                DateCreated = Id == null ? DateTime.UtcNow : DailyEntry.DateCreated,
+                DateCreated = isNew ? DateTime.UtcNow : DailyEntry.DateCreated,
                 DateUpdated = DateTime.UtcNow,
                 IsActive = true,
                 EntryDate = DailyEntry.EntryDate,
-                TotalCost = DailyEntry.Items.Sum(i => i.TotalCPV ?? 0),
-                Revenue = DailyEntry.Items.Sum(i => i.TotalRevenue ?? 0),
-                Liquid = DailyEntry.Items.Sum(i => (i.TotalRevenue ?? 0) - (i.TotalCPV ?? 0)),
+                TotalCost = totalCost,
+                Revenue = totalRevenue,
+                Liquid = totalLiquid,
                 Description = DailyEntry.Description ?? string.Empty,
                 TotalItems = DailyEntry.Items.Sum(i => i.Quantity),
                 TotalOrders = DailyEntry.TotalOrders ?? 0,
@@ -257,17 +258,17 @@
                 }).ToList()
             };
 
-            
             var baseUrl = Configuration["UrlApi"];
-            var endpoint = Id == null
-               ? $"{baseUrl}daily-entry/create"
-               : $"{baseUrl}daily-entry/update";
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(Entry));
+            var endpoint = isNew
+                ? $"{baseUrl}daily-entry/create"
+                : $"{baseUrl}daily-entry/update";
 
-            var response = Id == null
-                ? await Http.PostAsJsonAsync(endpoint, Entry)
-                : await Http.PutAsJsonAsync(endpoint,  Entry);
-         
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(entry));
+
+            var response = isNew
+                ? await Http.PostAsJsonAsync(endpoint, entry)
+                : await Http.PutAsJsonAsync(endpoint, entry);
+
             if (response.IsSuccessStatusCode)
             {
                 _toast.ShowSuccess("Fechamento salvo com sucesso!");
@@ -276,13 +277,14 @@
             else
             {
                 var msg = await response.Content.ReadAsStringAsync();
-                _toast.ShowError($"Erro ao salvar fechamento: {msg}");
+                _toast.ShowError($"Erro ({response.StatusCode}): {msg}");
             }
         }
         catch (Exception ex)
         {
-            _toast.ShowError("Erro ao salvar fechamento.");
+            _toast.ShowError($"Erro ao salvar fechamento: {ex.Message}");
         }
     }
+
 }
 
