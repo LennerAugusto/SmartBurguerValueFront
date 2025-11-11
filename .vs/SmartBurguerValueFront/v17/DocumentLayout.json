@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\dailyentry\\dailyentryedit.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\pages\\dailyentry\\dailyentryedit.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\wwwroot\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\wwwroot\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\dailyentry\\dailyentrylist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\pages\\dailyentry\\dailyentrylist.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\wwwroot\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\wwwroot\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 14,
+          "SelectedChildIndex": 15,
           "Children": [
             {
               "$type": "Bookmark",
@@ -78,28 +78,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DailyEntryEdit.razor",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryEdit.razor",
-              "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryEdit.razor",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryEdit.razor",
-              "RelativeToolTip": "SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryEdit.razor",
-              "ViewState": "AgIAAAABAAAAAAAAAAAiwB8BAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-10T15:01:09.521Z",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\appsettings.json",
+              "RelativeDocumentMoniker": "SmartBurguerValueFront\\wwwroot\\appsettings.json",
+              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\appsettings.json",
+              "RelativeToolTip": "SmartBurguerValueFront\\wwwroot\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-11-11T20:57:56.77Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DailyEntryList.razor",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryList.razor",
-              "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryList.razor",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryList.razor",
-              "RelativeToolTip": "SmartBurguerValueFront\\Pages\\DailyEntry\\DailyEntryList.razor",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-10T15:01:05.691Z",
+              "DocumentIndex": 0,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "SmartBurguerValueFront\\wwwroot\\appsettings.Development.json",
+              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\appsettings.Development.json",
+              "RelativeToolTip": "SmartBurguerValueFront\\wwwroot\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-11-11T20:57:55.327Z",
               "EditorCaption": ""
             }
           ]
