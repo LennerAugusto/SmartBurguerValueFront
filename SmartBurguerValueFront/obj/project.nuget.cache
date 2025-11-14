@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "7g1qox+q04k=",
+  "dgSpecHash": "ENMCjcjno7I=",
   "success": true,
   "projectFilePath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront.csproj",
   "expectedPackageFiles": [
@@ -15,6 +15,7 @@
     "C:\\Users\\Lenne\\.nuget\\packages\\microsoft.aspnetcore.components.webassembly\\9.0.2\\microsoft.aspnetcore.components.webassembly.9.0.2.nupkg.sha512",
     "C:\\Users\\Lenne\\.nuget\\packages\\microsoft.aspnetcore.components.webassembly.authentication\\9.0.2\\microsoft.aspnetcore.components.webassembly.authentication.9.0.2.nupkg.sha512",
     "C:\\Users\\Lenne\\.nuget\\packages\\microsoft.aspnetcore.components.webassembly.devserver\\9.0.2\\microsoft.aspnetcore.components.webassembly.devserver.9.0.2.nupkg.sha512",
+    "C:\\Users\\Lenne\\.nuget\\packages\\microsoft.aspnetcore.http.features\\5.0.17\\microsoft.aspnetcore.http.features.5.0.17.nupkg.sha512",
     "C:\\Users\\Lenne\\.nuget\\packages\\microsoft.aspnetcore.metadata\\9.0.8\\microsoft.aspnetcore.metadata.9.0.8.nupkg.sha512",
     "C:\\Users\\Lenne\\.nuget\\packages\\microsoft.extensions.configuration\\9.0.2\\microsoft.extensions.configuration.9.0.2.nupkg.sha512",
     "C:\\Users\\Lenne\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\9.0.2\\microsoft.extensions.configuration.abstractions.9.0.2.nupkg.sha512",
@@ -44,6 +45,7 @@
     "C:\\Users\\Lenne\\.nuget\\packages\\microsoft.net.sdk.webassembly.pack\\9.0.8\\microsoft.net.sdk.webassembly.pack.9.0.8.nupkg.sha512",
     "C:\\Users\\Lenne\\.nuget\\packages\\radzen.blazor\\7.3.3\\radzen.blazor.7.3.3.nupkg.sha512",
     "C:\\Users\\Lenne\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.12.1\\system.identitymodel.tokens.jwt.8.12.1.nupkg.sha512",
+    "C:\\Users\\Lenne\\.nuget\\packages\\system.io.pipelines\\5.0.2\\system.io.pipelines.5.0.2.nupkg.sha512",
     "C:\\Users\\Lenne\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\9.0.8\\microsoft.netcore.app.runtime.mono.browser-wasm.9.0.8.nupkg.sha512"
   ],
   "logs": []

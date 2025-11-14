@@ -17,14 +17,19 @@
     <h4 class="text-dark">@((Id != null) ? "Editar Compra" : "Criar nova compra")</h4>
     <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
         <div class="row mb-4">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <RadzenFormField Text="Fornecedor" Style="width: 100%">
                     <RadzenTextBox @bind-Value="@Purchase.SupplierName" />
                 </RadzenFormField>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <RadzenFormField Text="Data da Compra" Style="width: 100%">
                     <RadzenDatePicker @bind-Value="@Purchase.PurchaseDate" DateFormat="dd/MM/yyyy" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-4">
+                <RadzenFormField Text="Deseja registrar compra por XML da nota fiscal ?" Style="width: 100%">
+                    <InputFile OnChange="OnFileSelected" />
                 </RadzenFormField>
             </div>
         </div>
@@ -96,7 +101,7 @@
 </div>
 @code {
     [Parameter] public Guid Id { get; set; }
-
+    public PurchaseByXmlDTO PurchaseByXml { get; set; } = new();
     public PurchasesDTO Purchase { get; set; } = new();
     public PurchaseItemsDTO NewItem { get; set; } = new();
     public Guid? EnterpriseId { get; set; }
@@ -104,12 +109,13 @@
     public List<IngredientsDTO> Ingredients { get; set; } = new();
     public UnitTypesDTO UnitTypeSelected { get; set; }
     public Guid SelectedIngredientId { get; set; }
-
+    private IBrowserFile? selectedFile { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            PurchaseByXml = new PurchaseByXmlDTO();
             EnterpriseId = await _auth.GetEnterpriseId();
             var baseUrl = Configuration["UrlApi"];
             var ingredientsEndpoint = $"{baseUrl}ingredient/get-all/by-enterprise-id?enterpriseId={EnterpriseId}";
@@ -192,57 +198,94 @@
 
     private async Task SavePurchase()
     {
-        if (string.IsNullOrWhiteSpace(Purchase.SupplierName))
-        {
-            _toast.ShowError("Informe o nome do fornecedor.");
-            return;
-        }
-
-        if (!Purchase.Items.Any())
-        {
-            _toast.ShowError("Adicione pelo menos um item à compra.");
-            return;
-        }
-
-        try
+        if (selectedFile != null)
         {
             var baseUrl = Configuration["UrlApi"];
-            Purchase.Id = Id;
-            Purchase.EnterpriseId = EnterpriseId;
-            Purchase.TotalAmount = Purchase.Items.Sum(x => x.Quantity * x.UnitPrice);
-            Purchase.DateUpdated = DateTime.UtcNow;
-            Purchase.IsActive = Purchase.IsActive;
-            HttpResponseMessage response;
+            var uploadEndpoint = $"{baseUrl}purchase/create/by-upload-xml";
 
-            if (Id == Guid.Empty)
+            using var content = new MultipartFormDataContent();
+
+            var fileContent = new StreamContent(selectedFile.OpenReadStream(1024 * 1024 * 50));
+            fileContent.Headers.ContentType =
+                new System.Net.Http.Headers.MediaTypeHeaderValue(selectedFile.ContentType);
+            content.Add(fileContent, "File", selectedFile.Name);
+            content.Add(new StringContent(EnterpriseId.ToString()), "enterpriseId");
+
+            var uploadResponse = await Http.PostAsync(uploadEndpoint, content);
+
+            if (!uploadResponse.IsSuccessStatusCode)
             {
-                Purchase.Id = Guid.NewGuid();
-                Purchase.DateCreated = DateTime.UtcNow;
-                Purchase.IsActive = Purchase.IsActive;
-                var endpoint = $"{baseUrl}purchase/create";
-                response = await Http.PostAsJsonAsync(endpoint, Purchase);
+                var err = await uploadResponse.Content.ReadAsStringAsync();
+                _toast.ShowError($"Erro ao enviar XML: {err}");
+                return;
             }
             else
             {
-                var endpoint = $"{baseUrl}purchase/update";
-                response = await Http.PutAsJsonAsync(endpoint, Purchase);
-            }
-
-            if (response.IsSuccessStatusCode)
-            {
-                _toast.ShowSuccess("Compra salva com sucesso!");
+                _toast.ShowSuccess($"Compra Salva com sucesso");
                 _nav.NavigateTo("/compras");
             }
-            else
+        }
+
+        else
+        {
+            if (string.IsNullOrWhiteSpace(Purchase.SupplierName))
             {
-                var msg = await response.Content.ReadAsStringAsync();
-                _toast.ShowError($"Erro ao salvar compra: {msg}");
+                _toast.ShowError("Informe o nome do fornecedor.");
+                return;
+            }
+
+            if (!Purchase.Items.Any())
+            {
+                _toast.ShowError("Adicione pelo menos um item à compra.");
+                return;
+            }
+
+            try
+            {
+                var baseUrl = Configuration["UrlApi"];
+                Purchase.Id = Id;
+                Purchase.EnterpriseId = EnterpriseId;
+                Purchase.TotalAmount = Purchase.Items.Sum(x => x.Quantity * x.UnitPrice);
+                Purchase.DateUpdated = DateTime.UtcNow;
+                Purchase.IsActive = Purchase.IsActive;
+                HttpResponseMessage response;
+
+                if (Id == Guid.Empty)
+                {
+                    Purchase.Id = Guid.NewGuid();
+                    Purchase.DateCreated = DateTime.UtcNow;
+                    Purchase.IsActive = Purchase.IsActive;
+                    var endpoint = $"{baseUrl}purchase/create";
+                    response = await Http.PostAsJsonAsync(endpoint, Purchase);
+                }
+                else
+                {
+                    var endpoint = $"{baseUrl}purchase/update";
+                    response = await Http.PutAsJsonAsync(endpoint, Purchase);
+                }
+
+                if (response.IsSuccessStatusCode)
+                {
+                    _toast.ShowSuccess("Compra salva com sucesso!");
+                    _nav.NavigateTo("/compras");
+                }
+                else
+                {
+                    var msg = await response.Content.ReadAsStringAsync();
+                    _toast.ShowError($"Erro ao salvar compra: {msg}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Erro ao salvar compra: {ex.Message}");
+                _toast.ShowError("Erro ao salvar compra.");
             }
         }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Erro ao salvar compra: {ex.Message}");
-            _toast.ShowError("Erro ao salvar compra.");
-        }
     }
+
+    private void OnFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+    }
+
 }
