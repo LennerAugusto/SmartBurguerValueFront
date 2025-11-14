@@ -17,19 +17,19 @@
     <h4 class="text-dark">@((Id != null) ? "Editar Compra" : "Criar nova compra")</h4>
     <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
         <div class="row mb-4">
-            <div class="col-12 col-md-4">
-                <RadzenFormField Text="Fornecedor" Style="width: 100%">
-                    <RadzenTextBox @bind-Value="@Purchase.SupplierName" />
-                </RadzenFormField>
-            </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 <RadzenFormField Text="Data da Compra" Style="width: 100%">
                     <RadzenDatePicker @bind-Value="@Purchase.PurchaseDate" DateFormat="dd/MM/yyyy" />
                 </RadzenFormField>
             </div>
             <div class="col-12 col-md-4">
-                <RadzenFormField Text="Deseja registrar compra por XML da nota fiscal ?" Style="width: 100%">
-                    <InputFile OnChange="OnFileSelected" />
+                <RadzenFormField Text="Fornecedor" Style="width: 100%">
+                    <RadzenTextBox @bind-Value="@Purchase.SupplierName" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-5">
+                <RadzenFormField Text="Registrar compra por XML da nota fiscal ?" Style="width: 100%">
+                    <InputFile OnChange="OnFileSelected" class="rz-inputtext" />
                 </RadzenFormField>
             </div>
         </div>

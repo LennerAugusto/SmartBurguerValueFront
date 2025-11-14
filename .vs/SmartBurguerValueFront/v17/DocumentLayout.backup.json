@@ -3,20 +3,12 @@
   "WorkspaceRootPath": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\pages\\purchases\\purchasesedit.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\pages\\purchases\\purchasesedit.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B4462263-BD0C-449E-AFD6-80EA7D219812}|DTOs\\DTOs.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\dtos\\purchasebyxmldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B4462263-BD0C-449E-AFD6-80EA7D219812}|DTOs\\DTOs.csproj|solutionrelative:dtos\\purchasebyxmldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\wwwroot\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\wwwroot\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\wwwroot\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\wwwroot\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\wwwroot\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|solutionrelative:smartburguervaluefront\\wwwroot\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DE8C7546-B44A-4A93-B1A6-0B28EC9C4BE3}|SmartBurguerValueFront\\SmartBurguerValueFront.csproj|c:\\workspace\\personalprojects\\smartburguervaluefront\\smartburguervaluefront\\smartburguervaluefront\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,8 +22,22 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 18,
+          "SelectedChildIndex": 15,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\appsettings.json",
+              "RelativeDocumentMoniker": "SmartBurguerValueFront\\wwwroot\\appsettings.json",
+              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\appsettings.json*",
+              "RelativeToolTip": "SmartBurguerValueFront\\wwwroot\\appsettings.json*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-11-14T01:47:53.004Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
@@ -90,20 +96,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\appsettings.json",
-              "RelativeDocumentMoniker": "SmartBurguerValueFront\\wwwroot\\appsettings.json",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\appsettings.json",
-              "RelativeToolTip": "SmartBurguerValueFront\\wwwroot\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-14T01:02:02.728Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "appsettings.Development.json",
               "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\wwwroot\\appsettings.Development.json",
               "RelativeDocumentMoniker": "SmartBurguerValueFront\\wwwroot\\appsettings.Development.json",
@@ -111,46 +104,20 @@
               "RelativeToolTip": "SmartBurguerValueFront\\wwwroot\\appsettings.Development.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-14T01:01:49.851Z",
+              "WhenOpened": "2025-11-14T01:47:52.31Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "PurchaseByXmlDTO.cs",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\DTOs\\PurchaseByXmlDTO.cs",
-              "RelativeDocumentMoniker": "DTOs\\PurchaseByXmlDTO.cs",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\DTOs\\PurchaseByXmlDTO.cs",
-              "RelativeToolTip": "DTOs\\PurchaseByXmlDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-14T01:06:52.05Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Program.cs",
               "RelativeDocumentMoniker": "SmartBurguerValueFront\\Program.cs",
               "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Program.cs",
               "RelativeToolTip": "SmartBurguerValueFront\\Program.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-14T01:00:59.94Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "PurchasesEdit.razor",
-              "DocumentMoniker": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Purchases\\PurchasesEdit.razor",
-              "RelativeDocumentMoniker": "SmartBurguerValueFront\\Pages\\Purchases\\PurchasesEdit.razor",
-              "ToolTip": "C:\\Workspace\\PersonalProjects\\SmartBurguerValueFront\\SmartBurguerValueFront\\SmartBurguerValueFront\\Pages\\Purchases\\PurchasesEdit.razor",
-              "RelativeToolTip": "SmartBurguerValueFront\\Pages\\Purchases\\PurchasesEdit.razor",
-              "ViewState": "AgIAAMcAAAAAAAAAAAAAAOYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-14T01:00:06.371Z",
+              "WhenOpened": "2025-11-14T01:47:49.445Z",
               "EditorCaption": ""
             }
           ]
