@@ -17,19 +17,23 @@
 
     <div class="m-md-5 p-3 p-md-5 w-100" style="background-color: var(--white); border-radius:12px;">
         <div class="row">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 <RadzenFormField Text="Nome" Style="width: 100%">
                     <RadzenTextBox @bind-Value="@Employee.Name" />
                 </RadzenFormField>
             </div>
 
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
                 <RadzenFormField Text="Cargo" Style="width: 100%">
                     <RadzenTextBox @bind-Value="@Employee.Position" />
                 </RadzenFormField>
             </div>
-
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
+                <RadzenFormField Text="Data de contratação" Style="width: 100%">
+                    <RadzenDatePicker @bind-Value="@Employee.HiringDate" DateFormat="dd/MM/yyyy" />
+                </RadzenFormField>
+            </div>
+            <div class="col-12 col-md-3">
                 <RadzenFormField Text="Tipo de Contrato" Style="width: 100%">
                     <RadzenDropDown TValue="string"
                                     Data="@ContractTypes"

@@ -12,6 +12,7 @@ namespace DTOs
         public string Position { get; set; }
         public string? EmploymentType { get; set; }
         public Guid? EnterpriseId { get; set; }
+       public DateTime HiringDate { get; set; }
         public Decimal? MonthlySalary { get; set; }
         public List<WorkSchedulesDTO>? WorkSchedules { get; set; } = new List<WorkSchedulesDTO>();
     }
